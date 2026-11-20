@@ -25,7 +25,9 @@ App de gestión para un gimnasio chico (< 120 clientes). La fuente de verdad es 
 - UI: shadcn/ui + Tailwind. No agregues otras librerías de componentes.
 - **No agregues dependencias nuevas sin preguntar.**
 - Textos de la UI en español (Argentina). Código, nombres de variables y commits en inglés; los nombres de tablas y columnas siguen la spec.
+- Commits: una sola línea de título (por ejemplo, `feat: clients CRUD (T04)`), sin cuerpo ni `Co-Authored-By`.
 - Fechas de negocio (`fecha_pago`, `desde`, `hasta`, `attendances.fecha`) son `date` sin hora. Mostralas con `toLocaleDateString('es-AR')`.
+- "Hoy" es siempre la fecha de Argentina: en la base, `(now() at time zone 'America/Argentina/Buenos_Aires')::date`, nunca `current_date` (es UTC). Las columnas de fecha de negocio no tienen default: el frontend manda la fecha local.
 - Moneda: ARS, formateada con `Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' })`.
 
 ## Estructura
@@ -56,6 +58,8 @@ tests/            tests de RLS, client_periods y client_status (Vitest contra Su
 - La autorización se resuelve en la base de datos. Ocultar algo en la UI no cuenta como seguridad.
 - La service role key solo se usa en la Edge Function, nunca en `src/`.
 - Cada política nueva lleva al menos un test que verifique que un cliente **no** puede ver datos de otro.
+- Las políticas de lectura para clientes exigen que el cliente esté activo (`profiles.activo = true`).
+- Los tests corren contra la misma base que el seed: nada de DNIs ni emails fijos (usá `randomDni()` y `randomUUID()` de `tests/helpers.ts`), y cada test limpia lo que crea.
 - Nunca hagas cambios de esquema desde el panel de Supabase; siempre con migraciones.
 
 ## Lógica de negocio
