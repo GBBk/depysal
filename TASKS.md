@@ -13,7 +13,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
   - Terminado: cada rol termina en su sección y no puede entrar a la otra.
 - [x] **T04 Clientes**: Edge Function `create-client` (403 si no la llama un admin) y pantallas de listado, búsqueda, alta, edición y baja lógica.
   - Terminado: flujo completo desde la UI; validaciones zod (DNI único, email válido).
-- [ ] **T05 Seed** (`supabase/seed.sql`): 1 admin, unos 20 clientes y ejercicios básicos.
+- [x] **T05 Seed** (`supabase/seed.sql`): 1 admin y unos 20 clientes. (Los ejercicios básicos pasaron a T12, cuando se crea la tabla.)
   - Terminado: `supabase db reset` deja la app lista para probar.
 
 ## Etapa 2 — Pagos y asistencias (primera entrega al dueño)
@@ -38,6 +38,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 
 ## Etapa 3 — Rutinas
 - [ ] **T12 Migración: exercises, routines, routine_items + RLS + índice de una rutina activa por cliente**.
+  - Agregar al seed los ejercicios básicos (pendiente de T05).
   - Terminado: test donde un cliente ve solo su rutina activa y nunca plantillas.
 - [ ] **T13 Ejercicios**: CRUD.
 - [ ] **T14 Editor de rutinas y asignación**: días, ítems, reordenar; plantillas; asignar una plantilla (copia) o una rutina desde cero; la anterior queda inactiva.

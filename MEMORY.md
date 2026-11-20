@@ -3,8 +3,9 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 (scaffold), T02 (profiles + `is_admin()` + RLS + trigger), T03 (login y rutas por rol), T04 (clientes).
-- Próxima: T05 (seed: 1 admin, ~20 clientes, ejercicios).
+- Hechas: T01 (scaffold), T02 (profiles + `is_admin()` + RLS + trigger), T03 (login y rutas por rol), T04 (clientes), T05 (seed).
+- Próxima: T06 (plans, payments, attendances + RLS; seed con los 3 planes).
+- **Seed local**: `admin@depysal.test` / `admin1234`; clientes `<nombre>.<apellido>@depysal.test` / `cliente1234` (18 activos, 2 inactivos: Carla Herrera y Gonzalo Suárez). Los ejercicios se agregan en T12.
 - `/admin` y `/app` muestran solo un título: el panel se arma en T10 y el inicio del cliente en T15.
 - **Pendiente para T07/T08**: el filtro del listado de clientes por estado de cuota (necesita `client_status`) y la ficha completa (hoy `/admin/clientes/:id` es solo edición + baja).
 
@@ -34,6 +35,9 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 - **Docker en Windows**: está en `%LOCALAPPDATA%\Programs\DockerDesktop\resources\bin`. Si una terminal vieja no encuentra `docker`, agregalo al PATH o abrí una terminal nueva.
 - **Cambios en `supabase/config.toml` o funciones nuevas**: requieren `supabase stop` + `supabase start` (el edge runtime solo detecta funciones al arrancar); las migraciones se aplican con `supabase db reset`.
 - **Pantalla en blanco o 504 "Outdated Optimize Dep" en el navegador**: Vite reoptimizando dependencias nuevas; recargá.
+- **Tests y seed comparten la base**: nunca uses DNIs o emails fijos en los tests; usá `randomDni()` y emails con `randomUUID()` (de `tests/helpers.ts`).
+- **Seed con funciones volátiles**: no las llames dentro de un `WHERE` (corren por fila; con la tabla vacía no corren). Usá un bloque `DO`.
+- **Usuarios creados por SQL en el seed**: hace falta la fila en `auth.identities` y los `*_token` en `''` (no NULL), si no GoTrue no deja entrar.
 - **Escapes Unicode en regex**: escribí `\p{Diacritic}` con flag `u` en vez de rangos `̀-ͯ` (terminaron como caracteres invisibles).
 - **Generar tipos desde PowerShell**: `Out-File -Encoding utf8` agrega BOM; quitalo o usá `npm run db:types`.
 - **`supabase.auth.getSession()` no prueba la conexión**: lee el almacenamiento local. Para chequear, usá `/auth/v1/health`.

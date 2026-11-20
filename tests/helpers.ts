@@ -24,6 +24,11 @@ export function anonClient(): Db {
   return createClient<Database>(url, anonKey, noSession)
 }
 
+/** DNI aleatorio de 8 dígitos, para no chocar con el seed ni con otros tests. */
+export function randomDni(): string {
+  return String(10_000_000 + Math.floor(Math.random() * 89_999_999))
+}
+
 export type TestUser = { id: string; email: string; db: Db }
 
 /** Crea un usuario con el rol indicado y devuelve un cliente con su sesión iniciada. */

@@ -1,15 +1,16 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { anonClient, createUser, deleteUsers, service, type TestUser } from './helpers'
+import { anonClient, createUser, deleteUsers, randomDni, service, type TestUser } from './helpers'
 
 describe('profiles: trigger, is_admin() y RLS', () => {
+  const dniA = randomDni()
   let admin: TestUser
   let clientA: TestUser
   let clientB: TestUser
 
   beforeAll(async () => {
     admin = await createUser('admin')
-    clientA = await createUser('client', { nombre: 'Ana', apellido: 'Pérez', dni: '30111222' })
-    clientB = await createUser('client', { nombre: 'Beto', apellido: 'Gómez', dni: '30333444' })
+    clientA = await createUser('client', { nombre: 'Ana', apellido: 'Pérez', dni: dniA })
+    clientB = await createUser('client', { nombre: 'Beto', apellido: 'Gómez', dni: randomDni() })
   })
 
   afterAll(async () => {
@@ -27,7 +28,7 @@ describe('profiles: trigger, is_admin() y RLS', () => {
       rol: 'client',
       nombre: 'Ana',
       apellido: 'Pérez',
-      dni: '30111222',
+      dni: dniA,
       email: clientA.email,
       activo: true,
     })

@@ -1,12 +1,8 @@
 import { randomUUID } from 'node:crypto'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { anonClient, createUser, deleteUsers, service, type TestUser } from './helpers'
+import { anonClient, createUser, deleteUsers, randomDni, service, type TestUser } from './helpers'
 
 const functionUrl = `${process.env.VITE_SUPABASE_URL}/functions/v1/create-client`
-
-function randomDni(): string {
-  return String(10_000_000 + Math.floor(Math.random() * 89_999_999))
-}
 
 function newClientBody() {
   return {
