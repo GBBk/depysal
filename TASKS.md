@@ -9,7 +9,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 ## Etapa 1 — Auth y clientes
 - [x] **T02 Migración: profiles + `is_admin()` + RLS**, con trigger que crea el profile al crear el usuario.
   - Terminado: test donde un cliente lee su propio profile y no el de otro.
-- [ ] **T03 Login, logout y rutas por rol**: `/admin/*` solo para admin y `/app/*` solo para client; un cliente inactivo es bloqueado.
+- [x] **T03 Login, logout y rutas por rol**: `/admin/*` solo para admin y `/app/*` solo para client; un cliente inactivo es bloqueado.
   - Terminado: cada rol termina en su sección y no puede entrar a la otra.
 - [ ] **T04 Clientes**: Edge Function `create-client` (403 si no la llama un admin) y pantallas de listado, búsqueda, alta, edición y baja lógica.
   - Terminado: flujo completo desde la UI; validaciones zod (DNI único, email válido).

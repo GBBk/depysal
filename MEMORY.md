@@ -3,9 +3,14 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 (scaffold), T02 (profiles + `is_admin()` + RLS + trigger).
-- Próxima: T03 (login, logout y rutas por rol).
-- `src/app/HomePage.tsx` es una página temporal que chequea la conexión a Supabase; se reemplaza en T03.
+- Hechas: T01 (scaffold), T02 (profiles + `is_admin()` + RLS + trigger), T03 (login y rutas por rol).
+- Próxima: T04 (Edge Function `create-client` + pantallas de clientes).
+- `/admin` y `/app` muestran solo un título: el panel se arma en T10 y el inicio del cliente en T15.
+
+## Cómo está armada la auth (T03)
+- `AuthProvider` (sesión vía `onAuthStateChange`) → `useAuth()`; `useProfile()` lee el profile propio con TanStack Query.
+- `RequireArea` protege `/admin` y `/app`; sin `area` (en `/`) redirige a la sección de cada rol. Reglas puras en `features/auth/access.ts` (con tests).
+- Cliente inactivo: ve "Tu cuenta está inactiva" en `/app`. **Pendiente en la base**: las políticas de T06 y T12 para clientes deben exigir `activo = true`; hoy solo bloquea la UI (el cliente solo puede leer su propio profile).
 
 ## Decisiones (y por qué)
 - **Registro público desactivado** (`enable_signup = false` en `supabase/config.toml`): la spec dice que no hay registro público y, con la clave pública, cualquiera podía crearse una cuenta. `auth.admin.createUser` sigue funcionando.
