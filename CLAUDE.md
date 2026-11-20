@@ -4,11 +4,18 @@
 App de gestión para un gimnasio chico (< 120 clientes). La fuente de verdad es `SPEC.md`; el orden de trabajo está en `TASKS.md`. Priorizá siempre la solución más simple que cumpla la spec.
 
 ## Forma de trabajo
-1. Antes de empezar, leé `SPEC.md` y la próxima tarea sin marcar en `TASKS.md`.
+1. Antes de empezar, leé `MEMORY.md` (estado del proyecto y decisiones tomadas), `SPEC.md` y la próxima tarea sin marcar en `TASKS.md`.
 2. Hacé **solo esa tarea**. No adelantes tareas futuras ni agregues funciones que no están en la spec.
 3. Si algo de la spec es ambiguo o contradictorio, **preguntá** antes de decidir.
-4. Al terminar, corré `npm run typecheck && npm run lint && npm test`, marcá la tarea en `TASKS.md` y proponé un mensaje de commit.
+4. Al terminar, corré `npm run typecheck && npm run lint && npm test`, marcá la tarea en `TASKS.md`, actualizá `MEMORY.md` y proponé un mensaje de commit.
 5. Nada de la sección "Fuera de alcance" de la spec se implementa sin pedido explícito.
+
+## Memoria (`MEMORY.md`)
+- Al terminar cada tarea, actualizala: estado actual (hechas y próxima), decisiones importantes **con su porqué** y errores a evitar.
+- Mantenela breve (máximo ~50 líneas): resumí o eliminá lo que ya no aporte.
+- No repitas lo que ya dicen `SPEC.md`, `TASKS.md`, este archivo o el historial de git.
+- Si algo se vuelve una regla permanente, proponé moverlo a `CLAUDE.md` en lugar de dejarlo en la memoria.
+- La actualización de `MEMORY.md` va en el mismo commit que la tarea.
 
 ## Stack y convenciones
 - Vite + React + TypeScript en modo `strict`. Prohibido `any`; usá `unknown` y validá.
