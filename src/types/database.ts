@@ -23,7 +23,73 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "profiles": {
+            "attendances": {
+                  Row: {
+                    "client_id": string,"created_at": string,"created_by": string | null,"fecha": string,"id": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "client_id": string,"created_at"?: string,"created_by"?: string | null,"fecha": string,"id"?: never
+                  }
+                  Update: {
+                    "client_id"?: string,"created_at"?: string,"created_by"?: string | null,"fecha"?: string,"id"?: never
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "attendances_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendances_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"payments": {
+                  Row: {
+                    "anulado": boolean,"clases": number | null,"client_id": string,"created_at": string,"fecha_pago": string,"id": number,"medio": string,"monto": number,"plan_id": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "anulado"?: boolean,"clases"?: number | null,"client_id": string,"created_at"?: string,"fecha_pago": string,"id"?: never,"medio": string,"monto": number,"plan_id": number
+                  }
+                  Update: {
+                    "anulado"?: boolean,"clases"?: number | null,"client_id"?: string,"created_at"?: string,"fecha_pago"?: string,"id"?: never,"medio"?: string,"monto"?: number,"plan_id"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "payments_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "payments_plan_id_fkey"
+      columns: ["plan_id"]
+isOneToOne: false
+      referencedRelation: "plans"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"plans": {
+                  Row: {
+                    "activo": boolean,"clases": number | null,"id": number,"nombre": string,"precio": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "activo"?: boolean,"clases"?: number | null,"id"?: never,"nombre": string,"precio": number
+                  }
+                  Update: {
+                    "activo"?: boolean,"clases"?: number | null,"id"?: never,"nombre"?: string,"precio"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"profiles": {
                   Row: {
                     "activo": boolean,"apellido": string,"created_at": string,"dni": string | null,"email": string | null,"id": string,"nombre": string,"notas": string | null,"rol": string,"telefono": string | null
                   }

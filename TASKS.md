@@ -17,7 +17,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
   - Terminado: `supabase db reset` deja la app lista para probar.
 
 ## Etapa 2 — Pagos y asistencias (primera entrega al dueño)
-- [ ] **T06 Migración: plans, payments, attendances + RLS**. Seed con los 3 planes (8 clases, 12 clases, pase libre).
+- [x] **T06 Migración: plans, payments, attendances + RLS**. Seed con los 3 planes (8 clases, 12 clases, pase libre).
   - Terminado: test donde un cliente no ve pagos ni asistencias de otro.
 - [ ] **T07 Función `client_periods` y vista `client_status`** según SPEC §3. Agregar al seed pagos y asistencias que dejen clientes en los tres estados.
   - Terminado: tests de, como mínimo:

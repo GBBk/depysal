@@ -6,6 +6,12 @@
 --
 -- Los ejercicios se agregan en T12, cuando exista la tabla exercises.
 
+-- Planes (SPEC §2.2). Precios de ejemplo: el admin los edita desde la app.
+insert into public.plans (nombre, precio, clases) values
+  ('2 días por semana', 25000, 8),
+  ('3 días por semana', 32000, 12),
+  ('Pase libre', 40000, null);
+
 -- Crea un usuario de Auth con email y contraseña. El trigger handle_new_user crea su profile.
 create function pg_temp.seed_user(
   p_email text,
