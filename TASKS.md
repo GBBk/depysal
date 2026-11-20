@@ -11,7 +11,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
   - Terminado: test donde un cliente lee su propio profile y no el de otro.
 - [x] **T03 Login, logout y rutas por rol**: `/admin/*` solo para admin y `/app/*` solo para client; un cliente inactivo es bloqueado.
   - Terminado: cada rol termina en su sección y no puede entrar a la otra.
-- [ ] **T04 Clientes**: Edge Function `create-client` (403 si no la llama un admin) y pantallas de listado, búsqueda, alta, edición y baja lógica.
+- [x] **T04 Clientes**: Edge Function `create-client` (403 si no la llama un admin) y pantallas de listado, búsqueda, alta, edición y baja lógica.
   - Terminado: flujo completo desde la UI; validaciones zod (DNI único, email válido).
 - [ ] **T05 Seed** (`supabase/seed.sql`): 1 admin, unos 20 clientes y ejercicios básicos.
   - Terminado: `supabase db reset` deja la app lista para probar.

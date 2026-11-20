@@ -1,6 +1,9 @@
 import { createBrowserRouter, Navigate } from 'react-router'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { RequireArea } from '@/features/auth/RequireArea'
+import { ClientsPage } from '@/features/clients/ClientsPage'
+import { EditClientPage } from '@/features/clients/EditClientPage'
+import { NewClientPage } from '@/features/clients/NewClientPage'
 import { AdminLayout } from './AdminLayout'
 import { ClientLayout } from './ClientLayout'
 
@@ -15,7 +18,12 @@ export const router = createBrowserRouter([
       {
         element: <AdminLayout />,
         // El panel principal se arma en T10.
-        children: [{ index: true, element: <h1 className="text-xl font-semibold">Panel</h1> }],
+        children: [
+          { index: true, element: <h1 className="text-xl font-semibold">Panel</h1> },
+          { path: 'clientes', element: <ClientsPage /> },
+          { path: 'clientes/nuevo', element: <NewClientPage /> },
+          { path: 'clientes/:id', element: <EditClientPage /> },
+        ],
       },
     ],
   },
