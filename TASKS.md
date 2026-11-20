@@ -7,7 +7,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
   - Terminado: `npm run build` pasa y la app se conecta a Supabase local; `.env` está en `.gitignore`.
 
 ## Etapa 1 — Auth y clientes
-- [ ] **T02 Migración: profiles + `is_admin()` + RLS**, con trigger que crea el profile al crear el usuario.
+- [x] **T02 Migración: profiles + `is_admin()` + RLS**, con trigger que crea el profile al crear el usuario.
   - Terminado: test donde un cliente lee su propio profile y no el de otro.
 - [ ] **T03 Login, logout y rutas por rol**: `/admin/*` solo para admin y `/app/*` solo para client; un cliente inactivo es bloqueado.
   - Terminado: cada rol termina en su sección y no puede entrar a la otra.
