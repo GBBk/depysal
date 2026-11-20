@@ -3,48 +3,33 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 (scaffold), T02 (profiles + `is_admin()` + RLS + trigger), T03 (login y rutas por rol), T04 (clientes), T05 (seed), T06 (plans, payments, attendances + RLS).
-- Próxima: T07 (`client_periods` + `client_status` y seed con pagos/asistencias en los tres estados).
-- **Seed local**: `admin@depysal.test` / `admin1234`; clientes `<nombre>.<apellido>@depysal.test` / `cliente1234` (18 activos, 2 inactivos: Carla Herrera y Gonzalo Suárez). Los ejercicios se agregan en T12.
-- `/admin` y `/app` muestran solo un título: el panel se arma en T10 y el inicio del cliente en T15.
-- **Pendiente para T07/T08**: el filtro del listado de clientes por estado de cuota (necesita `client_status`) y la ficha completa (hoy `/admin/clientes/:id` es solo edición + baja).
+- Hechas: T01 a T07 (scaffold, profiles/RLS, auth, clientes, seed, pagos/asistencias, `client_periods` + `client_status`).
+- Próxima: T08 (planes y pagos en la UI; ficha del cliente).
+- **Seed local**: `admin@depysal.test` / `admin1234`; clientes `<nombre>.<apellido>@depysal.test` / `cliente1234`. Los estados que deja están en el encabezado de pagos de `supabase/seed.sql` (10 al día, 3 por vencer, 5 vencidos, 2 inactivos). Son relativos a hoy: hacé `db reset` si pasaron días.
+- `/admin` y `/app` muestran solo un título (panel en T10, inicio del cliente en T15).
+- **Pendiente para T08**: filtro del listado de clientes por estado (usar `client_status`) y la ficha completa (hoy `/admin/clientes/:id` es edición + baja).
+- **Pendiente para T09**: el bloqueo "Debe abonar" no está en la base; usar `client_status` (vigente con clases restantes > 0).
+- **Pendiente para T18**: los planes viven solo en el seed (precios de ejemplo); en producción hay que cargarlos.
 
-## Clientes (T04)
-- Alta por la Edge Function `create-client` (verifica `is_admin()` con el token de quien llama; 401 sin sesión, 403 si no es admin, 409 con `field` si el DNI o el email se repiten). Edición y baja directo sobre `profiles` (política de update del admin).
-- La contraseña inicial la escribe el admin en el alta. El email **no se edita** (es el usuario de Auth; cambiarlo requeriría otra función).
-- El DNI es obligatorio en el formulario (7 u 8 dígitos) aunque en la base sea nullable.
-- Las reglas zod están duplicadas en `src/features/clients/schemas.ts` y en la función (Deno no comparte imports con `src/`): si cambia una, cambiá la otra.
-- Búsqueda en memoria (`filterClients`, sin tildes, nombre/apellido/DNI): con < 120 clientes no hace falta buscar en el servidor.
-
-## Cómo está armada la auth (T03)
-- `AuthProvider` (sesión vía `onAuthStateChange`) → `useAuth()`; `useProfile()` lee el profile propio con TanStack Query.
-- `RequireArea` protege `/admin` y `/app`; sin `area` (en `/`) redirige a la sección de cada rol. Reglas puras en `features/auth/access.ts` (con tests).
-- Cliente inactivo: ve "Tu cuenta está inactiva" en `/app`. En la base, las políticas de cliente de `payments` y `attendances` exigen `activo = true` (subconsulta a su profile). **Pendiente**: hacer lo mismo en `routines`/`routine_items` (T12).
-
-## Pagos y asistencias (T06)
-- IDs `bigint identity` (solo `profiles` usa uuid, por Auth).
-- `fecha_pago` y `attendances.fecha` **sin default**: el frontend manda la fecha local; `current_date` en la base es UTC y de noche da el día siguiente.
-- `payments.clases` lo pone el trigger `copy_plan_clases` (ignora lo que mande el cliente HTTP).
-- Sin política de DELETE en `payments` (se anulan). `attendances` sí se borran (anular = borrar). FKs a `profiles` sin cascade: los tests borran pagos/asistencias antes que los usuarios.
-- **Pendiente para T07/T09**: el bloqueo "Debe abonar" (no registrar asistencia sin período vigente con clases, ni para pase libre) todavía no está en la base; necesita `client_periods`.
-- Precios del seed son de ejemplo. Los planes viven solo en el seed: en producción (T18) hay que cargarlos a mano o con una migración.
+## Cómo está armado
+- Auth: `AuthProvider` → `useAuth()`; `useProfile()`; `RequireArea` protege `/admin` y `/app` (reglas en `features/auth/access.ts`).
+- Clientes: alta por la Edge Function `create-client` (401/403/409 con `field`); edición y baja directo sobre `profiles`. El email no se edita (es el usuario de Auth). DNI obligatorio en el formulario. Las reglas zod están duplicadas en `features/clients/schemas.ts` y en la función: si cambia una, cambiá la otra. Búsqueda en memoria (`filterClients`).
+- Pagos/asistencias: IDs `bigint identity`. `payments.clases` lo pone el trigger `copy_plan_clases`. Pagos sin DELETE (se anulan); asistencias se borran. FKs a `profiles` sin cascade.
+- `client_status`: "hoy" es la fecha de Argentina (`now() at time zone 'America/Argentina/Buenos_Aires'`). Columnas extra a la spec: `plan_nombre` y `desde` (para mostrar el período actual).
 
 ## Decisiones (y por qué)
-- **Registro público desactivado** (`enable_signup = false` en `supabase/config.toml`): la spec dice que no hay registro público y, con la clave pública, cualquiera podía crearse una cuenta. `auth.admin.createUser` sigue funcionando.
-- **El trigger `handle_new_user` siempre crea `rol = 'client'`**: el rol nunca sale de los metadatos. Para tener un admin se actualiza `profiles.rol` (seed, service role u otro admin). Leerlo de `app_metadata` no sirve: GoTrue lo escribe después del INSERT, cuando el trigger ya corrió.
-- **Sin política de DELETE en `profiles`**: los clientes nunca se borran (baja lógica con `activo`).
-- **`profiles.dni` es nullable y único**: un admin puede no tenerlo.
-- **Tests con service role**: `SUPABASE_SERVICE_ROLE_KEY` en `.env` (sin prefijo `VITE_`, así nunca llega al frontend). Vitest carga `.env` con `loadEnv`. Helpers en `tests/helpers.ts` (`createUser`, `deleteUsers`, `anonClient`).
-- **Lint**: `react-refresh/only-export-components` está apagado solo en `src/components/ui/` (shadcn exporta variantes junto a los componentes).
-- **Commits**: solo la línea de título (por ejemplo, `feat: ... (T02)`), sin cuerpo ni `Co-Authored-By`.
+- **Registro público desactivado** (`enable_signup = false`): la spec no lo permite y con la clave pública cualquiera se registraba.
+- **`handle_new_user` siempre crea `rol = 'client'`**: el rol nunca sale de metadatos; un admin se crea actualizando `profiles.rol`. (`app_metadata` no sirve: GoTrue lo escribe después del INSERT.)
+- **Sin DELETE en `profiles`** (baja lógica). `profiles.dni` nullable y único (un admin puede no tenerlo).
+- **Estado con período en espera = `al_dia`** aunque el actual ya no esté vigente (p. ej. usó la última clase hoy y ya pagó el siguiente): la spec dice "o ya tiene el siguiente período pago en espera" y el cliente no pierde nada. Si hay que cambiarlo, es en la vista y con test.
+- **Tests con service role**: `SUPABASE_SERVICE_ROLE_KEY` en `.env` (sin `VITE_`). Helpers en `tests/helpers.ts`.
+- **Lint**: `react-refresh/only-export-components` apagado solo en `src/components/ui/`.
 
 ## Errores a evitar
-- **Docker en Windows**: está en `%LOCALAPPDATA%\Programs\DockerDesktop\resources\bin`. Si una terminal vieja no encuentra `docker`, agregalo al PATH o abrí una terminal nueva.
-- **Cambios en `supabase/config.toml` o funciones nuevas**: requieren `supabase stop` + `supabase start` (el edge runtime solo detecta funciones al arrancar); las migraciones se aplican con `supabase db reset`.
-- **Pantalla en blanco o 504 "Outdated Optimize Dep" en el navegador**: Vite reoptimizando dependencias nuevas; recargá.
-- **Tests y seed comparten la base**: nunca uses DNIs o emails fijos en los tests; usá `randomDni()` y emails con `randomUUID()` (de `tests/helpers.ts`).
-- **Seed con funciones volátiles**: no las llames dentro de un `WHERE` (corren por fila; con la tabla vacía no corren). Usá un bloque `DO`.
-- **Usuarios creados por SQL en el seed**: hace falta la fila en `auth.identities` y los `*_token` en `''` (no NULL), si no GoTrue no deja entrar.
-- **Escapes Unicode en regex**: escribí `\p{Diacritic}` con flag `u` en vez de rangos `̀-ͯ` (terminaron como caracteres invisibles).
-- **Generar tipos desde PowerShell**: `Out-File -Encoding utf8` agrega BOM; quitalo o usá `npm run db:types`.
-- **Archivos de la plantilla de Vite sin usar** (`src/App.tsx`, `src/App.css`, `src/assets/`, `public/icons.svg`): el borrado automático fue bloqueado; quedan pendientes de borrar a mano.
+- **Docker en Windows**: `%LOCALAPPDATA%\Programs\DockerDesktop\resources\bin`; si una terminal vieja no lo encuentra, agregalo al PATH.
+- **`config.toml` o funciones nuevas**: requieren `supabase stop` + `supabase start`. Migraciones y seed: `supabase db reset`.
+- **504 "Outdated Optimize Dep" o pantalla en blanco**: Vite reoptimizando; recargá.
+- **Fechas de `client_status` en tests**: relativas a hoy en Argentina (ver `T()` en `tests/client-periods.test.ts`).
+- **Seed**: no llames funciones volátiles dentro de un `WHERE` (corren por fila); usá `DO` o `select f()`. Usuarios por SQL necesitan `auth.identities` y los `*_token` en `''`.
+- **Regex de tildes**: usá `\p{Diacritic}` con flag `u` (los rangos con escapes Unicode terminaron como caracteres invisibles).
+- **Tipos**: generalos con `npm run db:types` (desde PowerShell, `Out-File` agrega BOM).

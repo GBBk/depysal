@@ -39,8 +39,20 @@ export type Database = {
       foreignKeyName: "attendances_client_id_fkey"
       columns: ["client_id"]
 isOneToOne: false
+      referencedRelation: "client_status"
+      referencedColumns: ["client_id"]
+    },{
+      foreignKeyName: "attendances_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "attendances_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "client_status"
+      referencedColumns: ["client_id"]
     },{
       foreignKeyName: "attendances_created_by_fkey"
       columns: ["created_by"]
@@ -62,6 +74,12 @@ isOneToOne: false
                   }
                   Relationships: [
                     {
+      foreignKeyName: "payments_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
+      referencedRelation: "client_status"
+      referencedColumns: ["client_id"]
+    },{
       foreignKeyName: "payments_client_id_fkey"
       columns: ["client_id"]
 isOneToOne: false
@@ -106,10 +124,23 @@ isOneToOne: false
                 }
           }
           Views: {
-            [_ in never]: never
+            "client_status": {
+                  Row: {
+                    "clases_restantes": number | null,"client_id": string,"desde": string | null,"estado": string | null,"hasta": string | null,"periodo_actual": number | null,"plan_nombre": string | null,"tiene_periodo_en_espera": boolean | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                }
           }
           Functions: {
-            "is_admin":
+            "client_periods":
+{ Args: { "p_client_id": string }; Returns: {
+              "clases_total": number,"clases_usadas": number,"desde": string,"hasta": string,"payment_id": number,"plan_nombre": string,"termino_por_clases": boolean
+            }[]
+                           },
+"is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            }
           }

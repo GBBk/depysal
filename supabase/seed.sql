@@ -99,3 +99,60 @@ begin
   end loop;
 end;
 $$;
+
+-- Pagos y asistencias, relativos a "hoy" (Argentina) para que el seed siempre deje clientes
+-- en los tres estados. Resultado esperado en client_status (clientes activos):
+--   al_dia (10):     Ana, José, Lucía, Sofía, Diego, Valentina, Matías (con período en espera),
+--                    Camila, Julieta, Tomás
+--   por_vencer (3):  Martín (por fecha), Nicolás (por fecha), Florencia (por clases: le quedan 2)
+--   vencido (5):     Facundo y Agustina (por fecha), Lautaro (usó las 8 clases),
+--                    Micaela (sin pagos), Joaquín (su único pago está anulado)
+-- Inactivos: Carla (pagó hace meses) y Gonzalo (sin pagos), los dos vencidos.
+
+-- Registra un pago hecho hace p_hace días y p_asistencias asistencias desde ese día, una cada 2 días.
+create function pg_temp.seed_payment(
+  p_email text,
+  p_plan text,
+  p_hace int,
+  p_asistencias int,
+  p_medio text default 'efectivo',
+  p_anulado boolean default false
+) returns void
+language plpgsql
+as $$
+declare
+  v_hoy date := (now() at time zone 'America/Argentina/Buenos_Aires')::date;
+  v_client uuid;
+  v_plan record;
+  v_fecha date := v_hoy - p_hace;
+begin
+  select id into strict v_client from public.profiles where email = p_email;
+  select id, precio into strict v_plan from public.plans where nombre = p_plan;
+
+  insert into public.payments (client_id, plan_id, monto, medio, fecha_pago, anulado)
+  values (v_client, v_plan.id, v_plan.precio, p_medio, v_fecha, p_anulado);
+
+  insert into public.attendances (client_id, fecha)
+  select v_client, v_fecha + i * 2 from generate_series(0, p_asistencias - 1) as i;
+end;
+$$;
+
+select pg_temp.seed_payment('ana.perez@depysal.test',          '2 días por semana', 10, 3);
+select pg_temp.seed_payment('jose.gomez@depysal.test',         'Pase libre',         3, 0, 'transferencia');
+select pg_temp.seed_payment('lucia.fernandez@depysal.test',    '3 días por semana', 15, 5);
+select pg_temp.seed_payment('sofia.martinez@depysal.test',     '2 días por semana',  5, 2, 'transferencia');
+select pg_temp.seed_payment('diego.rodriguez@depysal.test',    '3 días por semana',  8, 4);
+select pg_temp.seed_payment('valentina.garcia@depysal.test',   'Pase libre',        12, 0);
+select pg_temp.seed_payment('matias.sanchez@depysal.test',     '2 días por semana', 27, 3);
+select pg_temp.seed_payment('matias.sanchez@depysal.test',     '2 días por semana',  2, 0, 'transferencia');
+select pg_temp.seed_payment('camila.romero@depysal.test',      '3 días por semana',  1, 1);
+select pg_temp.seed_payment('julieta.benitez@depysal.test',    '3 días por semana', 20, 6, 'otro');
+select pg_temp.seed_payment('tomas.medina@depysal.test',       '2 días por semana',  6, 1);
+select pg_temp.seed_payment('martin.lopez@depysal.test',       'Pase libre',        26, 0);
+select pg_temp.seed_payment('nicolas.diaz@depysal.test',       '2 días por semana', 27, 2);
+select pg_temp.seed_payment('florencia.torres@depysal.test',   '2 días por semana', 12, 6);
+select pg_temp.seed_payment('facundo.alvarez@depysal.test',    '3 días por semana', 40, 5);
+select pg_temp.seed_payment('agustina.ruiz@depysal.test',      'Pase libre',        35, 0);
+select pg_temp.seed_payment('lautaro.ramirez@depysal.test',    '2 días por semana', 20, 8);
+select pg_temp.seed_payment('joaquin.acosta@depysal.test',     '2 días por semana',  4, 0, 'efectivo', true);
+select pg_temp.seed_payment('carla.herrera@depysal.test',      '2 días por semana', 120, 4);
