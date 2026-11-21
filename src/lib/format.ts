@@ -13,6 +13,14 @@ export function formatDate(iso: string): string {
   return new Date(`${iso}T12:00:00Z`).toLocaleDateString('es-AR', { timeZone: 'UTC' })
 }
 
+/** Primer y último día del mes de una fecha 'YYYY-MM-DD'. */
+export function monthRange(iso: string): { desde: string; hasta: string } {
+  const [year, month] = iso.split('-').map(Number)
+  const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate()
+  const mm = String(month).padStart(2, '0')
+  return { desde: `${year}-${mm}-01`, hasta: `${year}-${mm}-${String(lastDay).padStart(2, '0')}` }
+}
+
 const currency = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' })
 
 export function formatMoney(amount: number): string {

@@ -32,7 +32,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
     - un cliente no puede calcular los períodos de otro.
 - [x] **T08 Planes y pagos (UI)**: editar planes; registrar y anular pagos; ficha del cliente con período actual, períodos en espera e historial.
 - [x] **T09 Asistencias (UI)**: registrar y anular desde la ficha y desde el buscador del panel; muestra clases restantes; bloquea con "Debe abonar".
-- [ ] **T10 Panel principal**: buscador con asistencia rápida, vencidos, por vencer, contador de al día, ingresos del mes y botón WhatsApp.
+- [x] **T10 Panel principal**: buscador con asistencia rápida, vencidos, por vencer, contador de al día, ingresos del mes y botón WhatsApp.
   - Terminado: los números coinciden con el seed.
 - [ ] **T11 Deploy de demo** (Supabase Cloud + Vercel/Netlify) para mostrarle al dueño.
 

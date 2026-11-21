@@ -38,6 +38,7 @@ function invalidateClientPayments(queryClient: QueryClient, clientId: string) {
     queryClient.invalidateQueries({ queryKey: ['payments', clientId] }),
     queryClient.invalidateQueries({ queryKey: ['periods', clientId] }),
     queryClient.invalidateQueries({ queryKey: ['client-status'] }),
+    queryClient.invalidateQueries({ queryKey: ['payments', 'monthly-income'] }),
   ])
 }
 
