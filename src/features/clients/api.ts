@@ -54,6 +54,38 @@ export function useClient(id: string | undefined) {
   })
 }
 
+const statusColumns =
+  'client_id, estado, periodo_actual, plan_nombre, desde, hasta, clases_restantes, tiene_periodo_en_espera'
+
+/** Estado de cuota de todos los clientes (vista client_status). */
+export function useClientStatuses() {
+  return useQuery({
+    queryKey: ['client-status'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('client_status').select(statusColumns)
+      if (error) throw error
+      return data
+    },
+  })
+}
+
+export function useClientStatus(id: string) {
+  return useQuery({
+    queryKey: ['client-status', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('client_status')
+        .select(statusColumns)
+        .eq('client_id', id)
+        .single()
+      if (error) throw error
+      return data
+    },
+  })
+}
+
+export type ClientStatus = NonNullable<ReturnType<typeof useClientStatus>['data']>
+
 export function useCreateClient() {
   const queryClient = useQueryClient()
   return useMutation({

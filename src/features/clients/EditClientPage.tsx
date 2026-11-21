@@ -40,7 +40,7 @@ function EditClientForm({ client }: { client: ClientRow }) {
 
   const onSubmit = (values: UpdateClientValues) =>
     updateClient.mutate(values, {
-      onSuccess: () => navigate('/admin/clientes'),
+      onSuccess: () => navigate(`/admin/clientes/${client.id}`),
       onError: (error) => {
         // En la edición el único campo único editable es el DNI.
         if (error instanceof FieldError) setError('dni', { message: error.message })
@@ -97,7 +97,10 @@ function EditClientForm({ client }: { client: ClientRow }) {
           <Button type="submit" disabled={updateClient.isPending}>
             {updateClient.isPending ? 'Guardando…' : 'Guardar'}
           </Button>
-          <Link to="/admin/clientes" className={buttonVariants({ variant: 'outline' })}>
+          <Link
+            to={`/admin/clientes/${client.id}`}
+            className={buttonVariants({ variant: 'outline' })}
+          >
             Volver
           </Link>
         </div>

@@ -31,7 +31,7 @@ export function NewClientPage() {
 
   const onSubmit = (values: CreateClientValues) =>
     createClient.mutate(values, {
-      onSuccess: () => navigate('/admin/clientes'),
+      onSuccess: ({ id }) => navigate(`/admin/clientes/${id}`),
       onError: (error) => {
         if (error instanceof FieldError) setError(error.field, { message: error.message })
       },

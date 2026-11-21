@@ -5,6 +5,7 @@ import { SignOutButton } from '@/features/auth/SignOutButton'
 const links = [
   { to: '/admin', label: 'Panel', end: true },
   { to: '/admin/clientes', label: 'Clientes', end: false },
+  { to: '/admin/planes', label: 'Planes', end: false },
 ]
 
 export function AdminLayout() {

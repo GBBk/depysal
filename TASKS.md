@@ -30,7 +30,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
     - clases no usadas se pierden a los 30 días;
     - estados `al_dia`, `por_vencer` (por fecha y por clases) y `vencido`;
     - un cliente no puede calcular los períodos de otro.
-- [ ] **T08 Planes y pagos (UI)**: editar planes; registrar y anular pagos; ficha del cliente con período actual, períodos en espera e historial.
+- [x] **T08 Planes y pagos (UI)**: editar planes; registrar y anular pagos; ficha del cliente con período actual, períodos en espera e historial.
 - [ ] **T09 Asistencias (UI)**: registrar y anular desde la ficha y desde el buscador del panel; muestra clases restantes; bloquea con "Debe abonar".
 - [ ] **T10 Panel principal**: buscador con asistencia rápida, vencidos, por vencer, contador de al día, ingresos del mes y botón WhatsApp.
   - Terminado: los números coinciden con el seed.
