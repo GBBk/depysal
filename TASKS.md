@@ -34,7 +34,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 - [x] **T09 Asistencias (UI)**: registrar y anular desde la ficha y desde el buscador del panel; muestra clases restantes; bloquea con "Debe abonar".
 - [x] **T10 Panel principal**: buscador con asistencia rápida, vencidos, por vencer, contador de al día, ingresos del mes y botón WhatsApp.
   - Terminado: los números coinciden con el seed.
-- [ ] **T11 Deploy de demo** (Supabase Cloud + Vercel/Netlify) para mostrarle al dueño.
+- [x] **T11 Deploy de demo** (Supabase Cloud + Vercel/Netlify) para mostrarle al dueño.
 
 ## Etapa 3 — Rutinas
 - [ ] **T12 Migración: exercises, routines, routine_items + RLS + índice de una rutina activa por cliente**.

@@ -36,7 +36,7 @@ git remote add origin https://github.com/<usuario>/depysal.git
 git push -u origin main
 ```
 
-**2. Supabase Cloud.** En supabase.com creá un proyecto (región *South America (São Paulo)*) y guardá la contraseña de la base. Después, desde la carpeta del proyecto:
+**2. Supabase Cloud.** En supabase.com creá un proyecto (región _South America (São Paulo)_) y guardá la contraseña de la base. Después, desde la carpeta del proyecto:
 
 ```powershell
 npx supabase login
@@ -49,21 +49,21 @@ npx supabase functions deploy create-client
 
 En el panel de Supabase:
 
-- *Authentication → Sign In / Providers*: desactivá **Allow new users to sign up** (no hay registro público).
-- *Authentication → URL Configuration*: poné la URL de Vercel como **Site URL** (cuando la tengas).
-- *Authentication → Users → Add user*: creá tu admin con tu email y una contraseña segura (marcá *Auto Confirm User*). Después, en *SQL Editor*:
+- _Authentication → Sign In / Providers_: desactivá **Allow new users to sign up** (no hay registro público).
+- _Authentication → URL Configuration_: poné la URL de Vercel como **Site URL** (cuando la tengas).
+- _Authentication → Users → Add user_: creá tu admin con tu email y una contraseña segura (marcá _Auto Confirm User_). Después, en _SQL Editor_:
 
 ```sql
 update public.profiles set rol = 'admin' where email = '<tu-email>';
 delete from auth.users where email = 'admin@depysal.test'; -- el admin del seed tiene una contraseña conocida
 ```
 
-**3. Vercel.** *Add New → Project*, importá el repositorio (Vercel detecta Vite) y cargá estas variables de entorno antes de deployar:
+**3. Vercel.** _Add New → Project_, importá el repositorio (Vercel detecta Vite) y cargá estas variables de entorno antes de deployar:
 
-| Variable | Valor (Supabase → *Project Settings → API*) |
-|---|---|
-| `VITE_SUPABASE_URL` | Project URL |
-| `VITE_SUPABASE_ANON_KEY` | Publishable key (`sb_publishable_…`) |
+| Variable                 | Valor (Supabase → _Project Settings → API_) |
+| ------------------------ | ------------------------------------------- |
+| `VITE_SUPABASE_URL`      | Project URL                                 |
+| `VITE_SUPABASE_ANON_KEY` | Publishable key (`sb_publishable_…`)        |
 
 La secret key **no** va en Vercel: solo la usa la Edge Function, que ya la tiene en Supabase. `vercel.json` hace que todas las rutas sirvan `index.html`.
 
@@ -71,10 +71,10 @@ La secret key **no** va en Vercel: solo la usa la Edge Function, que ya la tiene
 
 ## Scripts
 
-| Script | Qué hace |
-|---|---|
-| `npm run dev` | Servidor de desarrollo |
+| Script                                | Qué hace                                              |
+| ------------------------------------- | ----------------------------------------------------- |
+| `npm run dev`                         | Servidor de desarrollo                                |
 | `npm run typecheck` / `lint` / `test` | Verificación (los tests corren contra Supabase local) |
-| `npm run build` | Build de producción |
-| `npm run db:start` / `db:reset` | Levanta Supabase local / resetea la base con el seed |
-| `npm run db:types` | Regenera `src/types/database.ts` |
+| `npm run build`                       | Build de producción                                   |
+| `npm run db:start` / `db:reset`       | Levanta Supabase local / resetea la base con el seed  |
+| `npm run db:types`                    | Regenera `src/types/database.ts`                      |
