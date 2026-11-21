@@ -37,17 +37,18 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 - [x] **T11 Deploy de demo** (Supabase Cloud + Vercel/Netlify) para mostrarle al dueño.
 
 ## Etapa 3 — Rutinas
-- [ ] **T12 Migración: exercises, routines, routine_items + RLS + índice de una rutina activa por cliente**.
-  - Agregar al seed los ejercicios básicos (pendiente de T05).
-  - Terminado: test donde un cliente ve solo su rutina activa y nunca plantillas.
-- [ ] **T13 Ejercicios**: CRUD.
-- [ ] **T14 Editor de rutinas y asignación**: días, ítems, reordenar; plantillas; asignar una plantilla (copia) o una rutina desde cero; la anterior queda inactiva.
+- [ ] **T12 Migración: exercises, routines, routine_items, routine_completions + RLS + índice de una rutina activa por cliente + bucket `exercise-images` con sus políticas** (SPEC §2.7, §2.8, §2.8.1, §3 y §4). Aplicarla también en la nube de la demo.
+  - Terminado: tests de que un cliente ve solo su rutina activa y nunca plantillas; solo marca y borra días hechos propios y de su rutina activa; no ve rutinas ni marcas de otro; un cliente inactivo no ve nada; un ejercicio usado en una rutina no se borra.
+- [ ] **T13 Biblioteca de ejercicios**: lista curada de unos 150 ejercicios de free-exercise-db (peso libre, máquinas, poleas y peso corporal), traducida al español, y un script de importación que sube las fotos a Storage. Corre en local (seed) y en la nube.
+  - Terminado: correr el script dos veces no duplica nada; cada ejercicio tiene nombre, grupo muscular, equipo e instrucciones en español y sus fotos.
+- [ ] **T14 Ejercicios (UI)**: listado con búsqueda y filtros (grupo, equipo) y fotos; alta y edición con subida o reemplazo de fotos y link a video; borrar solo si no está en uso.
+- [ ] **T15 Editor de rutinas y asignación**: crear, editar y eliminar rutinas y plantillas; días, ítems, reordenar; asignar una plantilla (copia) o una rutina desde cero; la anterior queda inactiva. Agregar al seed las 3 plantillas de ejemplo. En la ficha del cliente: su rutina activa y la última vez que hizo cada día.
   - Terminado: editar la copia no cambia la plantilla.
 
 ## Etapa 4 — Vista del cliente
-- [ ] **T15 Cliente**: inicio con estado, plan, vigencia, clases restantes y período en espera; mi rutina con pestañas por día; cambiar contraseña.
-- [ ] **T16 PWA**: manifest e íconos; instalable en Android e iOS.
+- [ ] **T16 Cliente**: inicio con estado, plan, vigencia, clases restantes y período en espera; mi rutina con pestañas por día, fotos, instrucciones y video; marcar un día como hecho (y borrar la marca); cambiar contraseña.
+- [ ] **T17 PWA**: manifest e íconos; instalable en Android e iOS.
 
 ## Etapa 5 — Cierre
-- [ ] **T17 Revisión de seguridad**: un agente nuevo revisa todas las políticas RLS, `client_periods`, `client_status` y la Edge Function contra SPEC §4.
-- [ ] **T18 Deploy de producción** y alta del admin real.
+- [ ] **T18 Revisión de seguridad**: un agente nuevo revisa todas las políticas RLS (incluido Storage), `client_periods`, `client_status`, el trigger de asistencias y la Edge Function contra SPEC §4.
+- [ ] **T19 Deploy de producción** y alta del admin real.

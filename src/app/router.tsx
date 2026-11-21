@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <ClientLayout />,
-        // El inicio del cliente se arma en T15.
+        // El inicio del cliente se arma en T16.
         children: [{ index: true, element: <h1 className="text-xl font-semibold">Inicio</h1> }],
       },
     ],

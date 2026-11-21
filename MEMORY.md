@@ -4,7 +4,7 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 
 ## Estado actual
 - Hechas: T01 a T11 (scaffold, profiles/RLS, auth, clientes, seed, pagos/asistencias, `client_periods` + `client_status`, planes y pagos, asistencias, panel principal, deploy de demo).
-- Próxima: T12 (exercises, routines, routine_items + RLS; ejercicios básicos al seed).
+- Próxima: T12 (migración de ejercicios, rutinas y días hechos + Storage). Etapa 3 replanificada el 21/11: biblioteca curada de free-exercise-db en español (T13), sin registro de cargas; el cliente solo marca días hechos (ver SPEC §2.7–2.9).
 - **Demo**: https://depysal.vercel.app (Vercel, repo `gbbk/depysal`, deploy automático desde `main`) con Supabase Cloud `depysal` (ref `mxrjrmxsgbsxifqpnlgt`, us-east-1). Registro público apagado; admin propio del usuario (el del seed se borró). Cada migración nueva hay que aplicarla también ahí (`db push --remote`); el seed **no** se vuelve a cargar (borraría/duplicaría datos).
 
 ## Deploy (T11)
@@ -12,12 +12,12 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 - **No usar `supabase config push`**: pisaría `site_url` y las redirect URLs de la nube con las locales. Los ajustes de Auth de la nube se cambian en el panel.
 - Vercel: Vite solo lee variables `VITE_`; las que crea la integración de Supabase (`NEXT_PUBLIC_*`, `SUPABASE_*`, `POSTGRES_*`) no se usan. Cargadas: `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (publishable). Después de cambiar variables hay que redeployar.
 - Git desde el entorno del agente: el push por HTTPS falla con OpenSSL; usá `git -c http.sslBackend=schannel push`.
-- **Usuarios creados antes de aplicar las migraciones no tienen profile** (el trigger no existía): la app muestra "No se pudo cargar tu cuenta". Pasó con el admin de la demo; se arregló insertando su fila en `profiles`. En producción (T18): migraciones primero, usuarios después.
+- **Usuarios creados antes de aplicar las migraciones no tienen profile** (el trigger no existía): la app muestra "No se pudo cargar tu cuenta". Pasó con el admin de la demo; se arregló insertando su fila en `profiles`. En producción (T19): migraciones primero, usuarios después.
 - Consultas a la nube desde el agente: `supabase db query --remote --read-only` (escrituras: `--yes`, con permiso). `information_schema` no muestra grants al rol de solo lectura: usá `has_table_privilege`.
 - `vercel link` agrega `.env*` al `.gitignore` (tapa `.env.example`): sacarlo si vuelve a aparecer.
 - **Seed local**: `admin@depysal.test` / `admin1234`; clientes `<nombre>.<apellido>@depysal.test` / `cliente1234`. Los estados que deja están en el encabezado de pagos de `supabase/seed.sql` (10 al día, 3 por vencer, 5 vencidos, 2 inactivos). Son relativos a hoy: hacé `db reset` si pasaron días.
-- `/app` muestra solo un título (inicio del cliente en T15).
-- **Pendiente para T18**: los planes viven solo en el seed (precios de ejemplo); en producción hay que cargarlos.
+- `/app` muestra solo un título (inicio del cliente en T16).
+- **Pendiente para T19**: los planes viven solo en el seed (precios de ejemplo); en producción hay que cargarlos.
 
 ## Cómo está armado
 - Auth: `AuthProvider` → `useAuth()`; `useProfile()`; `RequireArea` protege `/admin` y `/app` (reglas en `features/auth/access.ts`).

@@ -70,17 +70,31 @@ Se calcula en la vista `client_status`, no se guarda:
 - En cada cliente vencido o por vencer: botón **WhatsApp** que abre `https://wa.me/<telefono>?text=<mensaje>` con un recordatorio ya escrito.
 
 ### 2.7 Ejercicios (admin)
-- CRUD: nombre, grupo muscular (lista fija) y link a video opcional.
+- Cada ejercicio tiene: nombre, grupo muscular (lista fija), equipo (lista fija), instrucciones, hasta 2 fotos (posición inicial y final) y link a video opcional (por ejemplo, YouTube). Todo en español.
+  - Grupos musculares: Pecho, Espalda, Hombros, Bíceps, Tríceps, Antebrazos, Cuádriceps, Isquiotibiales, Glúteos, Pantorrillas, Abdominales, Cuerpo completo.
+  - Equipo: Barra, Mancuernas, Máquina, Polea, Peso corporal, Otro.
+- **Biblioteca inicial:** unos 150 ejercicios frecuentes de gimnasio con peso libre (barra y mancuernas), máquinas, poleas y peso corporal, importados una sola vez desde [free-exercise-db](https://github.com/yuhonas/free-exercise-db) (dominio público), con nombres e instrucciones traducidos al español y sus fotos copiadas a Supabase Storage. No se importan ejercicios de casos específicos (coordinación, halterofilia, strongman, rehabilitación) y de zona media solo los básicos. Cada ejercicio guarda su origen (`importado` o `propio`).
+- CRUD: el admin edita cualquier ejercicio (también los importados), crea ejercicios propios y sube o reemplaza sus fotos. Un ejercicio que está en alguna rutina no se puede borrar.
+- Listado con búsqueda por nombre y filtro por grupo muscular y equipo.
 
 ### 2.8 Rutinas (admin)
 - Una rutina tiene nombre y días (A, B, C…). Cada día tiene una lista ordenada de ítems: ejercicio, series, repeticiones (texto libre, por ejemplo "10-12" o "al fallo"), descanso en segundos y notas.
 - **Plantillas:** rutinas con `es_plantilla = true` y sin cliente.
 - **Asignar a un cliente:** desde una plantilla (se crea una **copia**; editarla no modifica la plantilla) o desde cero.
 - Cada cliente tiene como máximo **una rutina activa**. Al asignar una nueva, la anterior pasa a inactiva.
+- El admin crea, edita (nombre, días, ítems y su orden) y elimina rutinas y plantillas. Eliminar una rutina borra sus ítems y sus marcas de "hecho"; eliminar una plantilla no afecta las copias ya asignadas.
+- Se incluyen 3 plantillas de ejemplo armadas con la biblioteca (cuerpo completo 3 días, torso/pierna 4 días y empuje/tirón/pierna).
+- En la ficha del cliente, el admin ve su rutina activa y cuándo hizo cada día por última vez.
+
+### 2.8.1 Días hechos (cliente)
+- El cliente marca un día de su rutina activa como **hecho** en una fecha (por defecto hoy): "Hoy hice el Día A". Como máximo una marca por día de rutina y fecha.
+- Puede borrar una marca propia si se equivocó.
+- Marcar un día **no** registra asistencia: las asistencias las sigue registrando el admin (§2.4).
+- No se registran cargas, series ni repeticiones realizadas.
 
 ### 2.9 Vista del cliente (mobile-first, instalable como PWA)
 - **Inicio:** estado de cuota (badge con color), plan actual, vigencia hasta, clases restantes (si el plan tiene clases) y, si existe, el próximo período en espera.
-- **Mi rutina:** pestañas por día; cada ejercicio muestra series × reps, descanso, notas y el link al video.
+- **Mi rutina:** pestañas por día; cada ejercicio muestra sus fotos (alternando posición inicial y final), series × reps, descanso, notas, las instrucciones (desplegables) y el link al video. En cada día: botón **Marcar como hecho hoy** y la fecha de la última vez que lo hizo.
 - **Cambiar contraseña.**
 - El cliente no puede editar nada más.
 - Un cliente inactivo no puede usar la app: ve un mensaje para contactar al gimnasio.
@@ -95,12 +109,18 @@ payments         id, client_id → profiles, plan_id → plans, monto, medio, fe
                  clases (copia de plans.clases al momento del pago), anulado, created_at
 attendances      id, client_id → profiles, fecha, created_by, created_at
                  UNIQUE (client_id, fecha)
-exercises        id, nombre, grupo_muscular, video_url
+exercises        id, nombre, grupo_muscular, equipo, instrucciones, imagenes (rutas en Storage, 0 a 2),
+                 video_url, origen ('importado'|'propio'), origen_id (id en free-exercise-db), created_at
 routines         id, nombre, es_plantilla, client_id → profiles (null si es plantilla),
                  activa, created_at
 routine_items    id, routine_id → routines (cascade), dia ('A'..'F'), orden, exercise_id → exercises,
                  series, reps, descanso_seg, notas
+routine_completions  id, routine_id → routines (cascade), client_id → profiles, dia ('A'..'F'), fecha,
+                 created_at
+                 UNIQUE (routine_id, dia, fecha)
 ```
+
+Fotos de ejercicios: bucket de Supabase Storage `exercise-images`.
 
 `payments.clases` guarda una copia de las clases del plan para que, si el admin edita el plan después, los períodos ya pagados no cambien.
 
@@ -132,15 +152,17 @@ Una fila por cliente: `client_id`, `periodo_actual` (el que cubre hoy, si existe
 - Índice único parcial: una sola rutina `activa = true` por `client_id`.
 - `CHECK`: si `es_plantilla` entonces `client_id IS NULL`.
 - `CHECK`: `plans.clases` y `payments.clases` son null o > 0.
+- `routine_items.exercise_id` sin cascade: un ejercicio usado en rutinas no se borra.
 
 ## 4. Seguridad (RLS obligatorio en todas las tablas)
 - Función `is_admin()` (security definer) basada en `profiles.rol`.
 - `admin`: acceso total.
-- `client`, solo lectura:
+- `client` (siempre que esté activo), solo lectura salvo sus marcas de día hecho:
   - `profiles`: su propia fila.
   - `payments` y `attendances`: las propias (necesarias para calcular sus períodos).
-  - `plans` y `exercises`: todos.
+  - `plans` y `exercises`: todos. Fotos en `exercise-images`: lectura para usuarios logueados; escritura solo admin.
   - `routines` / `routine_items`: solo su rutina activa e ítems; nunca plantillas.
+  - `routine_completions`: lee, crea y borra solo las propias, y solo de su rutina activa.
 - `client_periods` es `SECURITY INVOKER` y `client_status` usa `security_invoker = true`: las dos respetan el RLS, así que un cliente solo puede calcular sus propios períodos.
 - La creación de usuarios cliente se hace con una Edge Function que usa la service role key y verifica que quien llama sea admin. La service role key **nunca** va en el frontend.
 
@@ -158,9 +180,11 @@ Una fila por cliente: `client_id`, `periodo_actual` (el que cubre hoy, si existe
 ## 6. Fuera de alcance (no implementar sin pedido explícito)
 - Pasarela de pagos (Mercado Pago, etc.)
 - Facturación electrónica AFIP/ARCA
-- Check-in hecho por el propio cliente (QR, molinetes, botón en la app)
+- Check-in hecho por el propio cliente (QR, molinetes, botón en la app). Marcar un día de rutina como hecho no es un check-in.
 - Límite de clases por semana (solo se controla el total del período)
 - Métricas de progreso o gráficos
+- Registro de cargas, series o repeticiones realizadas (el cliente solo marca el día como hecho)
+- Consultar una API de ejercicios en tiempo real (la biblioteca se importa una vez)
 - Historial de rutinas visible para el cliente
 - Reservas de turnos o clases con horario
 - Nutrición o planes de dieta

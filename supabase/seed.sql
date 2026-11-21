@@ -4,7 +4,7 @@
 --   admin@depysal.test      / admin1234   (rol admin)
 --   <nombre>.<apellido>@depysal.test / cliente1234   (20 clientes; 2 inactivos)
 --
--- Los ejercicios se agregan en T12, cuando exista la tabla exercises.
+-- Los ejercicios se importan en T13 (biblioteca curada de free-exercise-db).
 
 -- Planes (SPEC §2.2). Precios de ejemplo: el admin los edita desde la app.
 insert into public.plans (nombre, precio, clases) values
