@@ -38,7 +38,7 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 
 ## Errores a evitar
 - **Docker en Windows**: `%LOCALAPPDATA%\Programs\DockerDesktop\resources\bin`; si una terminal vieja no lo encuentra, agregalo al PATH.
-- **`config.toml` o funciones nuevas**: requieren `supabase stop` + `supabase start`. Migraciones y seed: `supabase db reset`.
+- **`config.toml`, funciones nuevas o funciones locales que responden 503** (pasó después de un `functions deploy` a la nube): `supabase stop` + `supabase start`. Migraciones y seed: `supabase db reset`.
 - **504 "Outdated Optimize Dep" o pantalla en blanco**: Vite reoptimizando; recargá.
 - **"No se pudo cargar tu cuenta" después de `db reset`**: la sesión guardada es de un usuario que ya no existe; cerrá sesión y entrá de nuevo.
 - **Fechas de `client_status` en tests**: relativas a hoy en Argentina (ver `T()` en `tests/client-periods.test.ts`).
