@@ -1,4 +1,4 @@
-# Reglas para el agente — Depysal
+# Reglas para el agente — Deporte y Salud
 
 ## Contexto
 App de gestión para un gimnasio chico (< 120 clientes). La fuente de verdad es `SPEC.md`; el orden de trabajo está en `TASKS.md`. Priorizá siempre la solución más simple que cumpla la spec.

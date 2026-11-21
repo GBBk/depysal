@@ -10,7 +10,7 @@ function newClientBody() {
     apellido: 'Ruiz',
     dni: randomDni(),
     telefono: '3415551234',
-    email: `nuevo-${randomUUID()}@depysal.test`,
+    email: `nuevo-${randomUUID()}@deporteysalud.test`,
     notas: 'Lesión de hombro',
     password: randomUUID(),
   }
@@ -41,7 +41,8 @@ describe('Edge Function create-client', () => {
   })
 
   afterAll(async () => {
-    for (const id of createdIds) await service.auth.admin.deleteUser(id)
+    // Si un test falla, puede haber quedado un id vacío: se saltea para limpiar el resto igual.
+    for (const id of createdIds) if (id) await service.auth.admin.deleteUser(id)
     await deleteUsers(admin, client)
   })
 

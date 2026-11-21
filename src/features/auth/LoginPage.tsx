@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Brand } from '@/app/Brand'
 import { useSignIn } from './api'
 import { useAuth } from './auth-context'
 import { loginSchema, type LoginValues } from './schemas'
@@ -33,10 +34,16 @@ export function LoginPage() {
     signIn.mutate(values, { onSuccess: () => navigate('/', { replace: true }) })
 
   return (
-    <main className="flex min-h-svh items-center justify-center p-4">
-      <Card className="w-full max-w-sm">
+    <main className="relative flex min-h-svh flex-col items-center justify-center gap-8 overflow-hidden bg-sidebar p-4 text-sidebar-foreground">
+      {/* Franja naranja decorativa */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 -right-24 size-72 rotate-12 rounded-[3rem] bg-primary/20 blur-2xl"
+      />
+      <Brand size="lg" className="relative" />
+      <Card className="relative w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Depysal</CardTitle>
+          <CardTitle className="text-xl">Iniciar sesión</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
@@ -69,7 +76,7 @@ export function LoginPage() {
                 {errorMessage(signIn.error)}
               </p>
             )}
-            <Button type="submit" disabled={signIn.isPending}>
+            <Button type="submit" size="lg" className="mt-2" disabled={signIn.isPending}>
               {signIn.isPending ? 'Ingresando…' : 'Ingresar'}
             </Button>
           </form>

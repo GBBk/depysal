@@ -36,6 +36,8 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
   - Terminado: los números coinciden con el seed.
 - [x] **T11 Deploy de demo** (Supabase Cloud + Vercel/Netlify) para mostrarle al dueño.
 
+- [x] **T11b Identidad visual** (pedido del usuario): colores del gimnasio (gris claro, naranja y negro), marca "Deporte y Salud", navegación lateral en escritorio y pestañas en celular, pantallas pulidas.
+
 ## Etapa 3 — Rutinas
 - [ ] **T12 Migración: exercises, routines, routine_items, routine_completions + RLS + índice de una rutina activa por cliente + bucket `exercise-images` con sus políticas** (SPEC §2.7, §2.8, §2.8.1, §3 y §4). Aplicarla también en la nube de la demo.
   - Terminado: tests de que un cliente ve solo su rutina activa y nunca plantillas; solo marca y borra días hechos propios y de su rutina activa; no ve rutinas ni marcas de otro; un cliente inactivo no ve nada; un ejercicio usado en una rutina no se borra.

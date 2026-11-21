@@ -1,14 +1,21 @@
 import { Outlet } from 'react-router'
 import { SignOutButton } from '@/features/auth/SignOutButton'
+import { Brand } from './Brand'
 
 export function ClientLayout() {
   return (
-    <div className="mx-auto min-h-svh max-w-md">
-      <header className="flex items-center justify-between border-b px-4 py-3">
-        <span className="font-semibold">Depysal</span>
-        <SignOutButton variant="ghost" />
+    <div className="min-h-svh">
+      <header className="sticky top-0 z-30 bg-sidebar text-sidebar-foreground">
+        <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
+          <Brand />
+          <SignOutButton
+            variant="ghost"
+            iconOnly
+            className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-white"
+          />
+        </div>
       </header>
-      <main className="p-4">
+      <main className="mx-auto max-w-md p-4">
         <Outlet />
       </main>
     </div>

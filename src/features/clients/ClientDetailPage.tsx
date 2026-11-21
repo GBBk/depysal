@@ -1,3 +1,4 @@
+import { ChevronLeft, Pencil } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router'
 import { Badge } from '@/components/ui/badge'
@@ -8,7 +9,9 @@ import { useClientPeriods } from '@/features/payments/api'
 import { PaymentForm } from '@/features/payments/PaymentForm'
 import { PaymentsHistory } from '@/features/payments/PaymentsHistory'
 import { formatDate, todayISO } from '@/lib/format'
+import { cn } from '@/lib/utils'
 import { useClient, useClientStatus, type ClientRow, type ClientStatus } from './api'
+import { ClientAvatar } from './ClientAvatar'
 import { StatusBadge } from './StatusBadge'
 
 export function ClientDetailPage() {
@@ -24,40 +27,55 @@ function ClientDetail({ client }: { client: ClientRow }) {
   const status = useClientStatus(client.id)
 
   return (
-    <div className="flex max-w-3xl flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-xl font-semibold">
-            {client.apellido}, {client.nombre}
-          </h1>
-          <StatusBadge estado={status.data?.estado} />
-          {!client.activo && <Badge variant="secondary">Inactivo</Badge>}
+    <div className="flex max-w-4xl flex-col gap-5">
+      <Link
+        to="/admin/clientes"
+        className="inline-flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ChevronLeft className="size-4" />
+        Clientes
+      </Link>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-4">
+          <ClientAvatar nombre={client.nombre} apellido={client.apellido} size="lg" />
+          <div className="flex flex-col gap-1.5">
+            <h1 className="font-heading text-2xl font-bold tracking-tight">
+              {client.nombre} {client.apellido}
+            </h1>
+            <div className="flex flex-wrap items-center gap-2">
+              <StatusBadge estado={status.data?.estado} />
+              {!client.activo && <Badge variant="secondary">Inactivo</Badge>}
+            </div>
+          </div>
         </div>
         <Link
           to={`/admin/clientes/${client.id}/editar`}
-          className={buttonVariants({ variant: 'outline' })}
+          className={cn(buttonVariants({ variant: 'outline' }), 'gap-1.5')}
         >
+          <Pencil />
           Editar datos
         </Link>
       </div>
 
-      <Section title="Datos">
-        <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
-          <Item label="DNI">{client.dni}</Item>
-          <Item label="Teléfono">{client.telefono}</Item>
-          <Item label="Email">{client.email}</Item>
-          <Item label="Notas">{client.notas}</Item>
-        </dl>
-      </Section>
+      <div className="grid gap-5 md:grid-cols-2">
+        <Section title="Datos">
+          <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+            <Item label="DNI">{client.dni}</Item>
+            <Item label="Teléfono">{client.telefono}</Item>
+            <Item label="Email">{client.email}</Item>
+            <Item label="Notas">{client.notas}</Item>
+          </dl>
+        </Section>
 
-      <Section title="Período actual">
-        {status.isPending && <p className="text-sm text-muted-foreground">Cargando…</p>}
-        {status.isError && (
-          <p className="text-sm text-destructive">No se pudo calcular el estado de cuota.</p>
-        )}
-        {status.data && <CurrentPeriod status={status.data} />}
-        <WaitingPeriods clientId={client.id} />
-      </Section>
+        <Section title="Período actual">
+          {status.isPending && <p className="text-sm text-muted-foreground">Cargando…</p>}
+          {status.isError && (
+            <p className="text-sm text-destructive">No se pudo calcular el estado de cuota.</p>
+          )}
+          {status.data && <CurrentPeriod status={status.data} />}
+          <WaitingPeriods clientId={client.id} />
+        </Section>
+      </div>
 
       {status.data && (
         <Section title="Asistencias">
@@ -81,7 +99,7 @@ function CurrentPeriod({ status }: { status: ClientStatus }) {
     return <p className="text-sm">Sin período vigente.</p>
   }
   return (
-    <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-3">
+    <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
       <Item label="Plan">{status.plan_nombre}</Item>
       <Item label="Vigencia">
         {formatDate(status.desde)} al {formatDate(status.hasta)}
@@ -121,7 +139,9 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="flex items-center gap-2 before:h-4 before:w-1 before:rounded-full before:bg-primary">
+          {title}
+        </CardTitle>
       </CardHeader>
       <CardContent>{children}</CardContent>
     </Card>
@@ -130,9 +150,9 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 function Item({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div>
+    <div className="min-w-0">
       <dt className="text-muted-foreground">{label}</dt>
-      <dd>{children || '—'}</dd>
+      <dd className="[overflow-wrap:anywhere]">{children || '—'}</dd>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-# Depysal
+# Deporte y Salud
 
 App de gestión para un gimnasio chico: clientes, pagos, asistencias y rutinas.
 
@@ -23,7 +23,7 @@ npm run db:reset      # aplica migraciones y carga el seed
 npm run dev           # http://localhost:5173
 ```
 
-Usuarios del seed (solo locales): `admin@depysal.test` / `admin1234` y los clientes `<nombre>.<apellido>@depysal.test` / `cliente1234` (por ejemplo, `ana.perez@depysal.test`).
+Usuarios del seed (solo locales): `admin@deporteysalud.test` / `admin1234` y los clientes `<nombre>.<apellido>@deporteysalud.test` / `cliente1234` (por ejemplo, `ana.perez@deporteysalud.test`).
 
 ## Deploy de demo (Supabase Cloud + Vercel)
 
@@ -55,7 +55,7 @@ En el panel de Supabase:
 
 ```sql
 update public.profiles set rol = 'admin' where email = '<tu-email>';
-delete from auth.users where email = 'admin@depysal.test'; -- el admin del seed tiene una contraseña conocida
+delete from auth.users where email = 'admin@deporteysalud.test'; -- el admin del seed tiene una contraseña conocida
 ```
 
 **3. Vercel.** _Add New → Project_, importá el repositorio (Vercel detecta Vite) y cargá estas variables de entorno antes de deployar:
@@ -67,7 +67,7 @@ delete from auth.users where email = 'admin@depysal.test'; -- el admin del seed 
 
 La secret key **no** va en Vercel: solo la usa la Edge Function, que ya la tiene en Supabase. `vercel.json` hace que todas las rutas sirvan `index.html`.
 
-**4. Probar.** Entrá con tu admin, creá un cliente (prueba la Edge Function), registrá un pago y una asistencia, y revisá el panel. Los clientes del seed entran con `<nombre>.<apellido>@depysal.test` / `cliente1234`.
+**4. Probar.** Entrá con tu admin, creá un cliente (prueba la Edge Function), registrá un pago y una asistencia, y revisá el panel. Los clientes del seed entran con `<nombre>.<apellido>@deporteysalud.test` / `cliente1234`.
 
 ## Scripts
 

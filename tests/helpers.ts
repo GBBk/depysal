@@ -36,7 +36,7 @@ export async function createUser(
   rol: 'admin' | 'client',
   userMetadata: Record<string, unknown> = {},
 ): Promise<TestUser> {
-  const email = `test-${randomUUID()}@depysal.test`
+  const email = `test-${randomUUID()}@deporteysalud.test`
   const password = randomUUID()
 
   const { data, error } = await service.auth.admin.createUser({

@@ -1,4 +1,4 @@
-# Depysal — Especificación
+# Deporte y Salud — Especificación
 
 App web de gestión para un gimnasio chico (< 120 clientes activos por mes).
 Objetivo: lo mínimo y funcional para gestionar **clientes**, **pagos**, **asistencias** y **rutinas**.

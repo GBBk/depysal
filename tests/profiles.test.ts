@@ -105,7 +105,7 @@ describe('profiles: trigger, is_admin() y RLS', () => {
 
   it('no hay registro público', async () => {
     const { error } = await anonClient().auth.signUp({
-      email: 'publico@depysal.test',
+      email: 'publico@deporteysalud.test',
       password: 'una-clave-cualquiera',
     })
     expect(error).not.toBeNull()

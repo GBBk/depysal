@@ -1,8 +1,8 @@
 -- Seed SOLO para desarrollo local (`supabase db reset`). Nunca se corre en producción.
 --
 -- Usuarios (contraseñas de prueba, solo locales):
---   admin@depysal.test      / admin1234   (rol admin)
---   <nombre>.<apellido>@depysal.test / cliente1234   (20 clientes; 2 inactivos)
+--   admin@deporteysalud.test      / admin1234   (rol admin)
+--   <nombre>.<apellido>@deporteysalud.test / cliente1234   (20 clientes; 2 inactivos)
 --
 -- Los ejercicios se importan en T13 (biblioteca curada de free-exercise-db).
 
@@ -53,8 +53,8 @@ declare
   v_id uuid;
 begin
   v_id := pg_temp.seed_user(
-    'admin@depysal.test', 'admin1234',
-    '{"nombre": "Admin", "apellido": "Depysal"}'
+    'admin@deporteysalud.test', 'admin1234',
+    '{"nombre": "Admin", "apellido": "Gimnasio"}'
   );
   update public.profiles set rol = 'admin' where id = v_id;
 end;
@@ -91,7 +91,7 @@ begin
     ) as t(nombre, apellido, dni, telefono, notas, activo)
   loop
     v_id := pg_temp.seed_user(
-      lower(translate(c.nombre || '.' || c.apellido, 'áéíóúÁÉÍÓÚ', 'aeiouAEIOU')) || '@depysal.test',
+      lower(translate(c.nombre || '.' || c.apellido, 'áéíóúÁÉÍÓÚ', 'aeiouAEIOU')) || '@deporteysalud.test',
       'cliente1234',
       jsonb_build_object('nombre', c.nombre, 'apellido', c.apellido, 'dni', c.dni, 'telefono', c.telefono)
     );
@@ -137,22 +137,22 @@ begin
 end;
 $$;
 
-select pg_temp.seed_payment('ana.perez@depysal.test',          '2 días por semana', 10, 3);
-select pg_temp.seed_payment('jose.gomez@depysal.test',         'Pase libre',         3, 0, 'transferencia');
-select pg_temp.seed_payment('lucia.fernandez@depysal.test',    '3 días por semana', 15, 5);
-select pg_temp.seed_payment('sofia.martinez@depysal.test',     '2 días por semana',  5, 2, 'transferencia');
-select pg_temp.seed_payment('diego.rodriguez@depysal.test',    '3 días por semana',  8, 4);
-select pg_temp.seed_payment('valentina.garcia@depysal.test',   'Pase libre',        12, 0);
-select pg_temp.seed_payment('matias.sanchez@depysal.test',     '2 días por semana', 27, 3);
-select pg_temp.seed_payment('matias.sanchez@depysal.test',     '2 días por semana',  2, 0, 'transferencia');
-select pg_temp.seed_payment('camila.romero@depysal.test',      '3 días por semana',  1, 1);
-select pg_temp.seed_payment('julieta.benitez@depysal.test',    '3 días por semana', 20, 6, 'otro');
-select pg_temp.seed_payment('tomas.medina@depysal.test',       '2 días por semana',  6, 1);
-select pg_temp.seed_payment('martin.lopez@depysal.test',       'Pase libre',        26, 0);
-select pg_temp.seed_payment('nicolas.diaz@depysal.test',       '2 días por semana', 27, 2);
-select pg_temp.seed_payment('florencia.torres@depysal.test',   '2 días por semana', 12, 6);
-select pg_temp.seed_payment('facundo.alvarez@depysal.test',    '3 días por semana', 40, 5);
-select pg_temp.seed_payment('agustina.ruiz@depysal.test',      'Pase libre',        35, 0);
-select pg_temp.seed_payment('lautaro.ramirez@depysal.test',    '2 días por semana', 20, 8);
-select pg_temp.seed_payment('joaquin.acosta@depysal.test',     '2 días por semana',  4, 0, 'efectivo', true);
-select pg_temp.seed_payment('carla.herrera@depysal.test',      '2 días por semana', 120, 4);
+select pg_temp.seed_payment('ana.perez@deporteysalud.test',          '2 días por semana', 10, 3);
+select pg_temp.seed_payment('jose.gomez@deporteysalud.test',         'Pase libre',         3, 0, 'transferencia');
+select pg_temp.seed_payment('lucia.fernandez@deporteysalud.test',    '3 días por semana', 15, 5);
+select pg_temp.seed_payment('sofia.martinez@deporteysalud.test',     '2 días por semana',  5, 2, 'transferencia');
+select pg_temp.seed_payment('diego.rodriguez@deporteysalud.test',    '3 días por semana',  8, 4);
+select pg_temp.seed_payment('valentina.garcia@deporteysalud.test',   'Pase libre',        12, 0);
+select pg_temp.seed_payment('matias.sanchez@deporteysalud.test',     '2 días por semana', 27, 3);
+select pg_temp.seed_payment('matias.sanchez@deporteysalud.test',     '2 días por semana',  2, 0, 'transferencia');
+select pg_temp.seed_payment('camila.romero@deporteysalud.test',      '3 días por semana',  1, 1);
+select pg_temp.seed_payment('julieta.benitez@deporteysalud.test',    '3 días por semana', 20, 6, 'otro');
+select pg_temp.seed_payment('tomas.medina@deporteysalud.test',       '2 días por semana',  6, 1);
+select pg_temp.seed_payment('martin.lopez@deporteysalud.test',       'Pase libre',        26, 0);
+select pg_temp.seed_payment('nicolas.diaz@deporteysalud.test',       '2 días por semana', 27, 2);
+select pg_temp.seed_payment('florencia.torres@deporteysalud.test',   '2 días por semana', 12, 6);
+select pg_temp.seed_payment('facundo.alvarez@deporteysalud.test',    '3 días por semana', 40, 5);
+select pg_temp.seed_payment('agustina.ruiz@deporteysalud.test',      'Pase libre',        35, 0);
+select pg_temp.seed_payment('lautaro.ramirez@deporteysalud.test',    '2 días por semana', 20, 8);
+select pg_temp.seed_payment('joaquin.acosta@deporteysalud.test',     '2 días por semana',  4, 0, 'efectivo', true);
+select pg_temp.seed_payment('carla.herrera@deporteysalud.test',      '2 días por semana', 120, 4);

@@ -1,5 +1,7 @@
+import { MessageCircle, Search, UserCheck, Wallet, type LucideIcon } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
+import { PageHeader } from '@/app/PageHeader'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -13,6 +15,7 @@ import {
 import { filterClients } from '@/features/clients/search'
 import { StatusBadge } from '@/features/clients/StatusBadge'
 import { formatDate, formatMoney, monthRange, todayISO } from '@/lib/format'
+import { cn } from '@/lib/utils'
 import { useMonthlyIncome } from './api'
 import { reminderMessage, toWhatsAppNumber, whatsAppUrl } from './whatsapp'
 
@@ -50,47 +53,69 @@ export function DashboardPage() {
   })
   const loadingClients = clients.isPending || statuses.isPending
 
-  return (
-    <div className="flex max-w-4xl flex-col gap-6">
-      <h1 className="text-xl font-semibold">Panel</h1>
+  const today = new Date(`${todayISO()}T12:00:00Z`).toLocaleDateString('es-AR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  })
 
-      <section className="flex flex-col gap-2">
-        <Input
-          type="search"
-          placeholder="Buscar cliente por nombre o DNI para registrar asistencia"
-          aria-label="Buscar cliente"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          autoFocus
-        />
-        {query.trim() && clients.data && results.length === 0 && (
-          <p className="text-sm text-muted-foreground">Sin resultados.</p>
-        )}
-        {results.length > 0 && (
-          <ul className="divide-y rounded-lg border px-3">
-            {results.map((c) => {
-              const status = statusById.get(c.id)
-              return (
-                <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
-                  <div className="flex items-center gap-2">
-                    <ClientLink client={c} />
-                    <StatusBadge estado={status?.estado} />
-                  </div>
-                  {status && <QuickAttendance clientId={c.id} status={status} />}
-                </li>
-              )
-            })}
-          </ul>
-        )}
-      </section>
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader title="Panel" description={today.charAt(0).toUpperCase() + today.slice(1)} />
+
+      <Card>
+        <CardContent className="flex flex-col gap-3">
+          <div className="relative">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
+            <Input
+              type="search"
+              placeholder="Buscar cliente (nombre o DNI)"
+              aria-label="Buscar cliente"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="h-11 pl-10 text-base md:text-base"
+              autoFocus
+            />
+          </div>
+          {query.trim() && clients.data && results.length === 0 && (
+            <p className="text-sm text-muted-foreground">Sin resultados.</p>
+          )}
+          {results.length > 0 && (
+            <ul className="divide-y">
+              {results.map((c) => {
+                const status = statusById.get(c.id)
+                return (
+                  <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
+                    <div className="flex items-center gap-2">
+                      <ClientLink client={c} />
+                      <StatusBadge estado={status?.estado} />
+                    </div>
+                    {status && <QuickAttendance clientId={c.id} status={status} />}
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
 
       {(clients.isError || statuses.isError) && (
         <p className="text-sm text-destructive">No se pudieron cargar los clientes.</p>
       )}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Stat label="Clientes al día" value={loadingClients ? '…' : String(alDia)} />
         <Stat
+          icon={UserCheck}
+          label="Clientes al día"
+          value={loadingClients ? '…' : String(alDia)}
+        />
+        <Stat
+          dark
+          icon={Wallet}
           label={`Ingresos de ${month}`}
           value={income.isPending ? '…' : income.isError ? 'Error' : formatMoney(income.data.total)}
           detail={
@@ -101,13 +126,15 @@ export function DashboardPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <ClientList
-          title={`Vencidos (${vencidos.length})`}
+          title="Vencidos"
+          tone="vencido"
           empty="No hay clientes vencidos."
           loading={loadingClients}
           items={vencidos}
         />
         <ClientList
-          title={`Por vencer (${porVencer.length})`}
+          title="Por vencer"
+          tone="por_vencer"
           empty="No hay clientes por vencer."
           loading={loadingClients}
           items={porVencer}
@@ -117,15 +144,51 @@ export function DashboardPage() {
   )
 }
 
-function Stat({ label, value, detail }: { label: string; value: string; detail?: ReactNode }) {
+function Stat({
+  icon: Icon,
+  label,
+  value,
+  detail,
+  dark = false,
+}: {
+  icon: LucideIcon
+  label: string
+  value: string
+  detail?: ReactNode
+  dark?: boolean
+}) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-sm font-normal text-muted-foreground">{label}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex items-baseline gap-2">
-        <span className="text-3xl font-semibold">{value}</span>
-        {detail && <span className="text-sm text-muted-foreground">{detail}</span>}
+    <Card className={cn(dark && 'bg-sidebar text-sidebar-foreground ring-sidebar-border')}>
+      <CardContent className="flex items-center gap-4">
+        <span
+          className={cn(
+            'flex size-12 shrink-0 items-center justify-center rounded-xl',
+            dark ? 'bg-primary text-primary-foreground' : 'bg-accent text-accent-foreground',
+          )}
+          aria-hidden
+        >
+          <Icon className="size-6" />
+        </span>
+        <div className="flex min-w-0 flex-col">
+          <span className={cn('text-sm', dark ? 'text-white/60' : 'text-muted-foreground')}>
+            {label}
+          </span>
+          <span className="flex flex-wrap items-baseline gap-x-2">
+            <span
+              className={cn(
+                'font-heading text-3xl font-bold tracking-tight',
+                dark && 'text-primary',
+              )}
+            >
+              {value}
+            </span>
+            {detail && (
+              <span className={cn('text-sm', dark ? 'text-white/60' : 'text-muted-foreground')}>
+                {detail}
+              </span>
+            )}
+          </span>
+        </div>
       </CardContent>
     </Card>
   )
@@ -136,16 +199,30 @@ function ClientList({
   empty,
   loading,
   items,
+  tone,
 }: {
   title: string
   empty: string
   loading: boolean
   items: ClientWithStatus[]
+  tone: 'vencido' | 'por_vencer'
 }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          {title}
+          {!loading && (
+            <span
+              className={cn(
+                'rounded-full px-2 py-0.5 text-xs font-semibold',
+                tone === 'vencido' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800',
+              )}
+            >
+              {items.length}
+            </span>
+          )}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {loading ? (
@@ -190,8 +267,9 @@ function WhatsAppButton({ client, status }: { client: ClientRow; status: ClientS
       href={whatsAppUrl(numero, reminderMessage(client.nombre, status))}
       target="_blank"
       rel="noopener noreferrer"
-      className={buttonVariants({ variant: 'outline', size: 'sm' })}
+      className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'gap-1.5')}
     >
+      <MessageCircle />
       WhatsApp
     </a>
   )
