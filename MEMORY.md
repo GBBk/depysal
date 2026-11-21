@@ -3,8 +3,9 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 a T11 (scaffold, profiles/RLS, auth, clientes, seed, pagos/asistencias, `client_periods` + `client_status`, planes y pagos, asistencias, panel principal, deploy de demo).
-- Próxima: T12 (migración de ejercicios, rutinas y días hechos + Storage). Etapa 3 replanificada el 21/11: biblioteca curada de free-exercise-db en español (T13), sin registro de cargas; el cliente solo marca días hechos (ver SPEC §2.7–2.9).
+- Hechas: T01 a T12 (scaffold, profiles/RLS, auth, clientes, seed, pagos/asistencias, `client_periods` + `client_status`, planes y pagos, asistencias, panel, deploy de demo, identidad visual, migración de ejercicios/rutinas/días hechos + Storage; aplicada también en la nube).
+- Próxima: T13 (biblioteca curada de free-exercise-db en español + script de importación que sube fotos al bucket `exercise-images`; local y nube).
+- **Rutinas (T12)**: `exercises.grupo_muscular` y `equipo` guardan la etiqueta en español (lista fija en CHECK). `routine_completions.client_id` lo pone el trigger `set_completion_client` (el default `auth.uid()` es solo para que sea opcional en los tipos). El cliente ve ítems y marca días solo de su rutina activa porque las políticas se apoyan en el RLS de `routines`. Bucket `exercise-images` **privado**: la UI tiene que usar URLs firmadas (`createSignedUrls`), no `getPublicUrl`. Helper `is_active_user()` (SECURITY INVOKER) para las políticas nuevas.
 - **Demo**: https://depysal.vercel.app (Vercel, repo `gbbk/depysal`, deploy automático desde `main`) con Supabase Cloud `depysal` (ref `mxrjrmxsgbsxifqpnlgt`, us-east-1). Registro público apagado; admin propio del usuario (el del seed se borró). Cada migración nueva hay que aplicarla también ahí (`db push --remote`); el seed **no** se vuelve a cargar (borraría/duplicaría datos).
 
 ## Diseño (T11b)
@@ -47,5 +48,4 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 - **"No se pudo cargar tu cuenta" después de `db reset`**: la sesión guardada es de un usuario que ya no existe; cerrá sesión y entrá de nuevo.
 - **Fechas de `client_status` en tests**: relativas a hoy en Argentina (ver `T()` en `tests/client-periods.test.ts`).
 - **Seed**: no llames funciones volátiles dentro de un `WHERE` (corren por fila); usá `DO` o `select f()`. Usuarios por SQL necesitan `auth.identities` y los `*_token` en `''`.
-- **Regex de tildes**: usá `\p{Diacritic}` con flag `u` (los rangos con escapes Unicode terminaron como caracteres invisibles).
 - **Tipos**: generalos con `npm run db:types` (desde PowerShell, `Out-File` agrega BOM).

@@ -61,6 +61,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"exercises": {
+                  Row: {
+                    "created_at": string,"equipo": string,"grupo_muscular": string,"id": number,"imagenes": (string)[],"instrucciones": string,"nombre": string,"origen": string,"origen_id": string | null,"video_url": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"equipo": string,"grupo_muscular": string,"id"?: never,"imagenes"?: (string)[],"instrucciones"?: string,"nombre": string,"origen"?: string,"origen_id"?: string | null,"video_url"?: string | null
+                  }
+                  Update: {
+                    "created_at"?: string,"equipo"?: string,"grupo_muscular"?: string,"id"?: never,"imagenes"?: (string)[],"instrucciones"?: string,"nombre"?: string,"origen"?: string,"origen_id"?: string | null,"video_url"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"payments": {
                   Row: {
                     "anulado": boolean,"clases": number | null,"client_id": string,"created_at": string,"fecha_pago": string,"id": number,"medio": string,"monto": number,"plan_id": number
@@ -121,6 +135,90 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"routine_completions": {
+                  Row: {
+                    "client_id": string,"created_at": string,"dia": string,"fecha": string,"id": number,"routine_id": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "client_id"?: string,"created_at"?: string,"dia": string,"fecha": string,"id"?: never,"routine_id": number
+                  }
+                  Update: {
+                    "client_id"?: string,"created_at"?: string,"dia"?: string,"fecha"?: string,"id"?: never,"routine_id"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "routine_completions_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
+      referencedRelation: "client_status"
+      referencedColumns: ["client_id"]
+    },{
+      foreignKeyName: "routine_completions_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "routine_completions_routine_id_fkey"
+      columns: ["routine_id"]
+isOneToOne: false
+      referencedRelation: "routines"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"routine_items": {
+                  Row: {
+                    "descanso_seg": number | null,"dia": string,"exercise_id": number,"id": number,"notas": string | null,"orden": number,"reps": string,"routine_id": number,"series": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "descanso_seg"?: number | null,"dia": string,"exercise_id": number,"id"?: never,"notas"?: string | null,"orden": number,"reps": string,"routine_id": number,"series": number
+                  }
+                  Update: {
+                    "descanso_seg"?: number | null,"dia"?: string,"exercise_id"?: number,"id"?: never,"notas"?: string | null,"orden"?: number,"reps"?: string,"routine_id"?: number,"series"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "routine_items_exercise_id_fkey"
+      columns: ["exercise_id"]
+isOneToOne: false
+      referencedRelation: "exercises"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "routine_items_routine_id_fkey"
+      columns: ["routine_id"]
+isOneToOne: false
+      referencedRelation: "routines"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"routines": {
+                  Row: {
+                    "activa": boolean,"client_id": string | null,"created_at": string,"es_plantilla": boolean,"id": number,"nombre": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "activa"?: boolean,"client_id"?: string | null,"created_at"?: string,"es_plantilla"?: boolean,"id"?: never,"nombre": string
+                  }
+                  Update: {
+                    "activa"?: boolean,"client_id"?: string | null,"created_at"?: string,"es_plantilla"?: boolean,"id"?: never,"nombre"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "routines_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
+      referencedRelation: "client_status"
+      referencedColumns: ["client_id"]
+    },{
+      foreignKeyName: "routines_client_id_fkey"
+      columns: ["client_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 }
           }
           Views: {
@@ -139,6 +237,9 @@ isOneToOne: false
 { Args: { "p_client_id": string }; Returns: {
               "clases_total": number,"clases_usadas": number,"desde": string,"hasta": string,"payment_id": number,"plan_nombre": string,"termino_por_clases": boolean
             }[]
+                           },
+"is_active_user":
+{ Args: Record<PropertyKey, never>; Returns: boolean
                            },
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean

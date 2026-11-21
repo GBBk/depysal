@@ -39,7 +39,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 - [x] **T11b Identidad visual** (pedido del usuario): colores del gimnasio (gris claro, naranja y negro), marca "Deporte y Salud", navegación lateral en escritorio y pestañas en celular, pantallas pulidas.
 
 ## Etapa 3 — Rutinas
-- [ ] **T12 Migración: exercises, routines, routine_items, routine_completions + RLS + índice de una rutina activa por cliente + bucket `exercise-images` con sus políticas** (SPEC §2.7, §2.8, §2.8.1, §3 y §4). Aplicarla también en la nube de la demo.
+- [x] **T12 Migración: exercises, routines, routine_items, routine_completions + RLS + índice de una rutina activa por cliente + bucket `exercise-images` con sus políticas** (SPEC §2.7, §2.8, §2.8.1, §3 y §4). Aplicarla también en la nube de la demo.
   - Terminado: tests de que un cliente ve solo su rutina activa y nunca plantillas; solo marca y borra días hechos propios y de su rutina activa; no ve rutinas ni marcas de otro; un cliente inactivo no ve nada; un ejercicio usado en una rutina no se borra.
 - [ ] **T13 Biblioteca de ejercicios**: lista curada de unos 150 ejercicios de free-exercise-db (peso libre, máquinas, poleas y peso corporal), traducida al español, y un script de importación que sube las fotos a Storage. Corre en local (seed) y en la nube.
   - Terminado: correr el script dos veces no duplica nada; cada ejercicio tiene nombre, grupo muscular, equipo e instrucciones en español y sus fotos.
