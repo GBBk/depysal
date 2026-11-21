@@ -41,11 +41,13 @@ git push -u origin main
 ```powershell
 npx supabase login
 npx supabase link --project-ref <ref-del-proyecto>
-npx supabase db push --include-seed
-npx supabase functions deploy create-client
+npx supabase db push --remote --include-seed
+npx supabase functions deploy create-client --remote
+npm run exercises:build
+npx supabase storage cp -r supabase/exercise-images/importados ss:///exercise-images --experimental --remote
 ```
 
-`link` pide la contraseña de la base; `db push --include-seed` aplica las migraciones y carga el seed (planes y clientes ficticios con pagos y asistencias relativos al día de hoy).
+`link` pide la contraseña de la base; `db push --include-seed` aplica las migraciones y carga el seed (biblioteca de ejercicios, planes y clientes ficticios con pagos y asistencias relativos al día de hoy). Las dos últimas líneas bajan las fotos de los ejercicios y las suben al bucket `exercise-images`. Para producción (sin clientes ficticios) se usa `db push --remote` y la biblioteca se carga aparte con `npx supabase db query --remote -f supabase/seeds/exercises.sql`.
 
 En el panel de Supabase:
 
@@ -71,10 +73,12 @@ La secret key **no** va en Vercel: solo la usa la Edge Function, que ya la tiene
 
 ## Scripts
 
-| Script                                | Qué hace                                              |
-| ------------------------------------- | ----------------------------------------------------- |
-| `npm run dev`                         | Servidor de desarrollo                                |
-| `npm run typecheck` / `lint` / `test` | Verificación (los tests corren contra Supabase local) |
-| `npm run build`                       | Build de producción                                   |
-| `npm run db:start` / `db:reset`       | Levanta Supabase local / resetea la base con el seed  |
-| `npm run db:types`                    | Regenera `src/types/database.ts`                      |
+| Script                                | Qué hace                                                                     |
+| ------------------------------------- | ---------------------------------------------------------------------------- |
+| `npm run dev`                         | Servidor de desarrollo                                                       |
+| `npm run typecheck` / `lint` / `test` | Verificación (los tests corren contra Supabase local)                        |
+| `npm run build`                       | Build de producción                                                          |
+| `npm run db:start` / `db:reset`       | Levanta Supabase local / resetea la base con el seed                         |
+| `npm run db:types`                    | Regenera `src/types/database.ts`                                             |
+| `npm run exercises:build`             | Valida la biblioteca, baja las fotos y genera `supabase/seeds/exercises.sql` |
+| `npm run exercises:upload`            | Sube las fotos al Storage local (lo corre `db:reset`)                        |

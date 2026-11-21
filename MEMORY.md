@@ -3,8 +3,9 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 a T12 (scaffold, profiles/RLS, auth, clientes, seed, pagos/asistencias, `client_periods` + `client_status`, planes y pagos, asistencias, panel, deploy de demo, identidad visual, migración de ejercicios/rutinas/días hechos + Storage; aplicada también en la nube).
-- Próxima: T13 (biblioteca curada de free-exercise-db en español + script de importación que sube fotos al bucket `exercise-images`; local y nube).
+- Hechas: T01 a T13 (… panel, deploy de demo, identidad visual, migración de ejercicios/rutinas/días hechos + Storage, biblioteca de 143 ejercicios; todo aplicado también en la nube).
+- Próxima: T14 (UI de ejercicios: listado con fotos y filtros, alta/edición con subida de fotos, borrar si no está en uso).
+- **Biblioteca (T13)**: la fuente de verdad es `scripts/exercise-library.json` (id de free-exercise-db + nombre, grupo, equipo e instrucciones en español, con voseo). `npm run exercises:build` valida, baja fotos a `supabase/exercise-images/` (ignorada por git) y genera `supabase/seeds/exercises.sql` (no editar a mano; `on conflict do nothing` para no pisar ediciones del admin). El seed carga primero `seeds/exercises.sql` (`sql_paths`). `npm run db:reset` también sube las fotos. **`storage cp -r` a una carpeta que ya existe la anida**: el destino es la raíz del bucket (`ss:///exercise-images`).
 - **Rutinas (T12)**: `exercises.grupo_muscular` y `equipo` guardan la etiqueta en español (lista fija en CHECK). `routine_completions.client_id` lo pone el trigger `set_completion_client` (el default `auth.uid()` es solo para que sea opcional en los tipos). El cliente ve ítems y marca días solo de su rutina activa porque las políticas se apoyan en el RLS de `routines`. Bucket `exercise-images` **privado**: la UI tiene que usar URLs firmadas (`createSignedUrls`), no `getPublicUrl`. Helper `is_active_user()` (SECURITY INVOKER) para las políticas nuevas.
 - **Demo**: https://depysal.vercel.app (Vercel, repo `gbbk/depysal`, deploy automático desde `main`) con Supabase Cloud `depysal` (ref `mxrjrmxsgbsxifqpnlgt`, us-east-1). Registro público apagado; admin propio del usuario (el del seed se borró). Cada migración nueva hay que aplicarla también ahí (`db push --remote`); el seed **no** se vuelve a cargar (borraría/duplicaría datos).
 
@@ -44,7 +45,6 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 ## Errores a evitar
 - **Docker en Windows**: `%LOCALAPPDATA%\Programs\DockerDesktop\resources\bin`; si una terminal vieja no lo encuentra, agregalo al PATH.
 - **`config.toml`, funciones nuevas o funciones locales que responden 503** (pasó después de un `functions deploy` a la nube): `supabase stop` + `supabase start`. Migraciones y seed: `supabase db reset`.
-- **504 "Outdated Optimize Dep" o pantalla en blanco**: Vite reoptimizando; recargá.
 - **"No se pudo cargar tu cuenta" después de `db reset`**: la sesión guardada es de un usuario que ya no existe; cerrá sesión y entrá de nuevo.
 - **Fechas de `client_status` en tests**: relativas a hoy en Argentina (ver `T()` en `tests/client-periods.test.ts`).
 - **Seed**: no llames funciones volátiles dentro de un `WHERE` (corren por fila); usá `DO` o `select f()`. Usuarios por SQL necesitan `auth.identities` y los `*_token` en `''`.

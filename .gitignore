@@ -35,3 +35,6 @@ supabase/.branches
 # Vercel CLI
 .vercel
 
+
+# Fotos de la biblioteca de ejercicios (se generan con npm run exercises:build)
+supabase/exercise-images/
