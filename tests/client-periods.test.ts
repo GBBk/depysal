@@ -155,8 +155,8 @@ describe('client_periods', () => {
         { fecha: '2026-03-01', plan: 'p8' },
         { fecha: '2026-03-25', plan: 'p8' },
       ],
-      // La del 22 cae cuando estaba vencido: no cuenta en ningún período.
-      [...ochoClases, '2026-03-22'],
+      // Entre el 21 y el 24 está vencido: no puede registrar asistencias (ver attendance-rules).
+      ochoClases,
     )
     const [first, second] = await periods(user.id)
     expect(first).toMatchObject({ hasta: '2026-03-20', termino_por_clases: true })
@@ -174,14 +174,23 @@ describe('client_periods', () => {
   })
 
   it('pase libre: ignora las asistencias y solo termina por fecha', async () => {
-    const asistencias = Array.from({ length: 12 }, (_, i) => addDays('2026-03-01', i))
-    const { user } = await scenario(
-      [
-        { fecha: '2026-03-01', plan: 'libre' },
-        { fecha: '2026-03-10', plan: 'libre' },
-      ],
-      asistencias,
-    )
+    // Las asistencias se registraron con un plan de 8 clases cargado por error; después se
+    // anuló y se cargó el pase libre. Con el pase libre no se pueden registrar asistencias
+    // nuevas, así que este es el único camino para que queden asistencias en su ventana.
+    const asistencias = Array.from({ length: 7 }, (_, i) => addDays('2026-03-01', i))
+    const { user, paymentIds } = await scenario([{ fecha: '2026-03-01', plan: 'p8' }], asistencias)
+    await service.from('payments').update({ anulado: true }).eq('id', paymentIds[0])
+    for (const fecha of ['2026-03-01', '2026-03-10']) {
+      const { error } = await service.from('payments').insert({
+        client_id: user.id,
+        plan_id: plans.libre,
+        monto: 1000,
+        medio: 'efectivo',
+        fecha_pago: fecha,
+      })
+      if (error) throw error
+    }
+
     expect(await periods(user.id)).toEqual([
       {
         desde: '2026-03-01',

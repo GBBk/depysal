@@ -3,11 +3,10 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 a T08 (scaffold, profiles/RLS, auth, clientes, seed, pagos/asistencias, `client_periods` + `client_status`, planes y pagos en la UI).
-- Próxima: T09 (asistencias en la UI).
+- Hechas: T01 a T09 (scaffold, profiles/RLS, auth, clientes, seed, pagos/asistencias, `client_periods` + `client_status`, planes y pagos en la UI, asistencias en la UI).
+- Próxima: T10 (panel: vencidos, por vencer, contador al día, ingresos del mes, WhatsApp). El buscador con asistencia rápida ya está en `features/dashboard/DashboardPage.tsx` (T09): sumar ahí lo demás.
 - **Seed local**: `admin@depysal.test` / `admin1234`; clientes `<nombre>.<apellido>@depysal.test` / `cliente1234`. Los estados que deja están en el encabezado de pagos de `supabase/seed.sql` (10 al día, 3 por vencer, 5 vencidos, 2 inactivos). Son relativos a hoy: hacé `db reset` si pasaron días.
-- `/admin` y `/app` muestran solo un título (panel en T10, inicio del cliente en T15).
-- **Pendiente para T09**: el bloqueo "Debe abonar" no está en la base; usar `client_status` (vigente con clases restantes > 0). La ficha (`ClientDetailPage`) ya tiene secciones con `Section`: sumar ahí la de asistencias.
+- `/app` muestra solo un título (inicio del cliente en T15).
 - **Pendiente para T18**: los planes viven solo en el seed (precios de ejemplo); en producción hay que cargarlos.
 
 ## Cómo está armado
@@ -15,6 +14,7 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 - Clientes: alta por la Edge Function `create-client` (401/403/409 con `field`); edición y baja directo sobre `profiles`. El email no se edita (es el usuario de Auth). DNI obligatorio en el formulario. Las reglas zod están duplicadas en `features/clients/schemas.ts` y en la función: si cambia una, cambiá la otra. Búsqueda en memoria (`filterClients`).
 - Pagos/asistencias: IDs `bigint identity`. `payments.clases` lo pone el trigger `copy_plan_clases`. Pagos sin DELETE (se anulan); asistencias se borran. FKs a `profiles` sin cascade.
 - UI admin (T08): `/admin/clientes/:id` es la ficha (datos, período actual, en espera, registrar pago, historial); la edición pasó a `/admin/clientes/:id/editar`. `/admin/planes` edita planes. Formularios con valores string y conversión en `toPlanUpdate`/`toPaymentInsert` (con tests). Fechas y moneda: `src/lib/format.ts` (`todayISO`, `formatDate`, `formatMoney`). Query keys: `['client-status']`, `['periods', id]`, `['payments', id]`; un pago invalida las tres.
+- Asistencias (T09): el trigger `check_attendance_allowed` rechaza con mensaje `debe_abonar` o `pase_libre` (P0001) si en esa fecha no hay período con clases; vale para cualquier fecha. La UI muestra el aviso de hoy con `attendanceAvailability(client_status)` y traduce los errores con `attendanceErrorMessage`. Por eso los tests no pueden insertar asistencias fuera de un período: armá el escenario con pagos antes.
 - `client_status`: "hoy" es la fecha de Argentina (`now() at time zone 'America/Argentina/Buenos_Aires'`). Columnas extra a la spec: `plan_nombre` y `desde` (para mostrar el período actual).
 
 ## Decisiones (y por qué)

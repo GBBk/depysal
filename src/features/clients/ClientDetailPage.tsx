@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AttendanceSection } from '@/features/attendances/AttendanceSection'
 import { useClientPeriods } from '@/features/payments/api'
 import { PaymentForm } from '@/features/payments/PaymentForm'
 import { PaymentsHistory } from '@/features/payments/PaymentsHistory'
@@ -57,6 +58,12 @@ function ClientDetail({ client }: { client: ClientRow }) {
         {status.data && <CurrentPeriod status={status.data} />}
         <WaitingPeriods clientId={client.id} />
       </Section>
+
+      {status.data && (
+        <Section title="Asistencias">
+          <AttendanceSection clientId={client.id} status={status.data} />
+        </Section>
+      )}
 
       <Section title="Registrar pago">
         <PaymentForm clientId={client.id} />

@@ -5,6 +5,7 @@ import { ClientDetailPage } from '@/features/clients/ClientDetailPage'
 import { ClientsPage } from '@/features/clients/ClientsPage'
 import { EditClientPage } from '@/features/clients/EditClientPage'
 import { NewClientPage } from '@/features/clients/NewClientPage'
+import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { PlansPage } from '@/features/plans/PlansPage'
 import { AdminLayout } from './AdminLayout'
 import { ClientLayout } from './ClientLayout'
@@ -19,9 +20,8 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <AdminLayout />,
-        // El panel principal se arma en T10.
         children: [
-          { index: true, element: <h1 className="text-xl font-semibold">Panel</h1> },
+          { index: true, element: <DashboardPage /> },
           { path: 'clientes', element: <ClientsPage /> },
           { path: 'clientes/nuevo', element: <NewClientPage /> },
           { path: 'clientes/:id', element: <ClientDetailPage /> },
