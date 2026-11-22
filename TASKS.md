@@ -44,7 +44,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 - [x] **T13 Biblioteca de ejercicios**: lista curada de unos 150 ejercicios de free-exercise-db (peso libre, máquinas, poleas y peso corporal), traducida al español, y un script de importación que sube las fotos a Storage. Corre en local (seed) y en la nube.
   - Terminado: correr el script dos veces no duplica nada; cada ejercicio tiene nombre, grupo muscular, equipo e instrucciones en español y sus fotos.
 - [x] **T14 Ejercicios (UI)**: listado con búsqueda y filtros (grupo, equipo) y fotos; alta y edición con subida o reemplazo de fotos y link a video; borrar solo si no está en uso.
-- [ ] **T15 Editor de rutinas y asignación**: crear, editar y eliminar rutinas y plantillas; días, ítems, reordenar; asignar una plantilla (copia) o una rutina desde cero; la anterior queda inactiva. Agregar al seed las 3 plantillas de ejemplo. En la ficha del cliente: su rutina activa y la última vez que hizo cada día.
+- [x] **T15 Editor de rutinas y asignación**: crear, editar y eliminar rutinas y plantillas; días, ítems, reordenar; asignar una plantilla (copia) o una rutina desde cero; la anterior queda inactiva. Agregar al seed las 3 plantillas de ejemplo. En la ficha del cliente: su rutina activa y la última vez que hizo cada día.
   - Terminado: editar la copia no cambia la plantilla.
 
 ## Etapa 4 — Vista del cliente

@@ -9,6 +9,8 @@ import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { ExerciseFormPage } from '@/features/exercises/ExerciseFormPage'
 import { ExercisesPage } from '@/features/exercises/ExercisesPage'
 import { PlansPage } from '@/features/plans/PlansPage'
+import { RoutineEditorPage } from '@/features/routines/RoutineEditorPage'
+import { RoutinesPage } from '@/features/routines/RoutinesPage'
 import { AdminLayout } from './AdminLayout'
 import { ClientLayout } from './ClientLayout'
 
@@ -31,6 +33,8 @@ export const router = createBrowserRouter([
           { path: 'ejercicios', element: <ExercisesPage /> },
           { path: 'ejercicios/nuevo', element: <ExerciseFormPage /> },
           { path: 'ejercicios/:id', element: <ExerciseFormPage /> },
+          { path: 'rutinas', element: <RoutinesPage /> },
+          { path: 'rutinas/:id', element: <RoutineEditorPage /> },
           { path: 'planes', element: <PlansPage /> },
         ],
       },

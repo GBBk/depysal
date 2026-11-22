@@ -9,6 +9,7 @@ import { useClientPeriods } from '@/features/payments/api'
 import { PaymentForm } from '@/features/payments/PaymentForm'
 import { PaymentsHistory } from '@/features/payments/PaymentsHistory'
 import { formatDate, todayISO } from '@/lib/format'
+import { ClientRoutineSection } from '@/features/routines/ClientRoutineSection'
 import { cn } from '@/lib/utils'
 import { useClient, useClientStatus, type ClientRow, type ClientStatus } from './api'
 import { ClientAvatar } from './ClientAvatar'
@@ -82,6 +83,10 @@ function ClientDetail({ client }: { client: ClientRow }) {
           <AttendanceSection clientId={client.id} status={status.data} />
         </Section>
       )}
+
+      <Section title="Rutina">
+        <ClientRoutineSection clientId={client.id} clientName={client.nombre} />
+      </Section>
 
       <Section title="Registrar pago">
         <PaymentForm clientId={client.id} />

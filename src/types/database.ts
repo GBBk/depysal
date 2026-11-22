@@ -233,7 +233,10 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "client_periods":
+            "assign_routine":
+{ Args: { "p_client_id": string,"p_nombre"?: string,"p_template_id"?: number }; Returns: number
+                           },
+"client_periods":
 { Args: { "p_client_id": string }; Returns: {
               "clases_total": number,"clases_usadas": number,"desde": string,"hasta": string,"payment_id": number,"plan_nombre": string,"termino_por_clases": boolean
             }[]
@@ -243,6 +246,9 @@ isOneToOne: false
                            },
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"save_routine":
+{ Args: { "p_items": Json,"p_nombre": string,"p_routine_id": number }; Returns: undefined
                            }
           }
           Enums: {

@@ -1,4 +1,11 @@
-import { CreditCard, Dumbbell, LayoutDashboard, Users, type LucideIcon } from 'lucide-react'
+import {
+  ClipboardList,
+  CreditCard,
+  Dumbbell,
+  LayoutDashboard,
+  Users,
+  type LucideIcon,
+} from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 import { SignOutButton } from '@/features/auth/SignOutButton'
 import { cn } from '@/lib/utils'
@@ -10,6 +17,7 @@ const links: NavItem[] = [
   { to: '/admin', label: 'Panel', icon: LayoutDashboard, end: true },
   { to: '/admin/clientes', label: 'Clientes', icon: Users, end: false },
   { to: '/admin/ejercicios', label: 'Ejercicios', icon: Dumbbell, end: false },
+  { to: '/admin/rutinas', label: 'Rutinas', icon: ClipboardList, end: false },
   { to: '/admin/planes', label: 'Planes', icon: CreditCard, end: false },
 ]
 
@@ -73,7 +81,7 @@ export function AdminLayout() {
 
       {/* Pestañas (celular) */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-sidebar-border bg-sidebar pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-sidebar-border bg-sidebar pb-[env(safe-area-inset-bottom)] md:hidden"
         aria-label="Principal"
       >
         {links.map((l) => (

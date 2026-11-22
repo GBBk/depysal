@@ -47,7 +47,7 @@ npm run exercises:build
 npx supabase storage cp -r supabase/exercise-images/importados ss:///exercise-images --experimental --remote
 ```
 
-`link` pide la contraseña de la base; `db push --include-seed` aplica las migraciones y carga el seed (biblioteca de ejercicios, planes y clientes ficticios con pagos y asistencias relativos al día de hoy). Las dos últimas líneas bajan las fotos de los ejercicios y las suben al bucket `exercise-images`. Para producción (sin clientes ficticios) se usa `db push --remote` y la biblioteca se carga aparte con `npx supabase db query --remote -f supabase/seeds/exercises.sql`.
+`link` pide la contraseña de la base; `db push --include-seed` aplica las migraciones y carga el seed (biblioteca de ejercicios, plantillas de rutina, planes y clientes ficticios con pagos y asistencias relativos al día de hoy). Las dos últimas líneas bajan las fotos de los ejercicios y las suben al bucket `exercise-images`. Para producción (sin clientes ficticios) se usa `db push --remote` y la biblioteca y las plantillas se cargan aparte con `npx supabase db query --remote -f supabase/seeds/exercises.sql` y `... -f supabase/seeds/routine-templates.sql`.
 
 En el panel de Supabase:
 
