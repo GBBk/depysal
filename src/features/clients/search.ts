@@ -1,12 +1,6 @@
-type Searchable = { nombre: string; apellido: string; dni: string | null; activo: boolean }
+import { normalizeText as normalize } from '@/lib/text'
 
-function normalize(text: string): string {
-  return text
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
-    .trim()
-}
+type Searchable = { nombre: string; apellido: string; dni: string | null; activo: boolean }
 
 /** Filtra por nombre, apellido o DNI (sin importar tildes ni mayúsculas). */
 export function filterClients<T extends Searchable>(

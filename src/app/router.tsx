@@ -6,6 +6,8 @@ import { ClientsPage } from '@/features/clients/ClientsPage'
 import { EditClientPage } from '@/features/clients/EditClientPage'
 import { NewClientPage } from '@/features/clients/NewClientPage'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
+import { ExerciseFormPage } from '@/features/exercises/ExerciseFormPage'
+import { ExercisesPage } from '@/features/exercises/ExercisesPage'
 import { PlansPage } from '@/features/plans/PlansPage'
 import { AdminLayout } from './AdminLayout'
 import { ClientLayout } from './ClientLayout'
@@ -26,6 +28,9 @@ export const router = createBrowserRouter([
           { path: 'clientes/nuevo', element: <NewClientPage /> },
           { path: 'clientes/:id', element: <ClientDetailPage /> },
           { path: 'clientes/:id/editar', element: <EditClientPage /> },
+          { path: 'ejercicios', element: <ExercisesPage /> },
+          { path: 'ejercicios/nuevo', element: <ExerciseFormPage /> },
+          { path: 'ejercicios/:id', element: <ExerciseFormPage /> },
           { path: 'planes', element: <PlansPage /> },
         ],
       },
