@@ -48,7 +48,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
   - Terminado: editar la copia no cambia la plantilla.
 
 ## Etapa 4 — Vista del cliente
-- [ ] **T16 Cliente**: inicio con estado, plan, vigencia, clases restantes y período en espera; mi rutina con pestañas por día, fotos, instrucciones y video; marcar un día como hecho (y borrar la marca); cambiar contraseña.
+- [x] **T16 Cliente**: inicio con estado, plan, vigencia, clases restantes y período en espera; mi rutina con pestañas por día, fotos, instrucciones y video; marcar un día como hecho (y borrar la marca); cambiar contraseña.
 - [ ] **T17 PWA**: manifest e íconos; instalable en Android e iOS.
 
 ## Etapa 5 — Cierre

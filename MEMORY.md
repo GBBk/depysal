@@ -3,8 +3,9 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 a T15 (… biblioteca de 143 ejercicios, UI de ejercicios, editor de rutinas y asignación; todo aplicado también en la nube).
-- Próxima: T16 (vista del cliente: inicio con estado/plan/vigencia/clases, Mi rutina con fotos y marcar día hecho, cambiar contraseña).
+- Hechas: T01 a T16 (… UI de ejercicios, editor de rutinas y asignación, vista del cliente; todo aplicado también en la nube).
+- Próxima: T17 (PWA: manifest e íconos, instalable en Android e iOS; vite-plugin-pwa está en la spec pero no instalado: preguntar antes de agregarlo).
+- **Vista del cliente (T16)**: `/app` (inicio), `/app/rutina`, `/app/cuenta`, con pestañas abajo (`ClientLayout`). Hooks en `features/client-app/api.ts` (`useMy*`, el RLS filtra). La pestaña de día sugerida (`suggestedDay`: la que sigue a la última hecha) se calcula **una vez al montar**; si se recalcula, al marcar el día la pantalla salta al siguiente. `PhotoCycle` alterna las 2 fotos (o las muestra juntas con reduced motion). Contraseña mínima 6 (igual que Auth).
 - **Rutinas (T15)**: guardar y asignar van por funciones atómicas `save_routine` (reemplaza todos los ítems) y `assign_routine` (desactiva la anterior y copia la plantilla; sin plantilla = vacía). `/admin/rutinas` = plantillas; la rutina de cada cliente se asigna y ve desde su ficha. El editor usa un array plano de ítems (con `dia`) en react-hook-form; `orden` se recalcula al guardar (`toSaveItems`). Plantillas de ejemplo en `supabase/seeds/routine-templates.sql` (idempotente por nombre; también cargadas en la nube).
 - **Ejercicios (T14)**: `/admin/ejercicios`. Fotos con `usePhotoUrls(paths)` (un `createSignedUrls` por lote; reusalo en rutinas y en la vista del cliente) y `ExercisePhoto`. Fotos propias en `propios/<id>/<slot>-<timestamp>.<ext>`; al reemplazar o borrar se eliminan solo las propias (las importadas no). `GRUPOS`/`EQUIPOS` en `exercises/options.ts` (mismas listas que el CHECK y el script). Búsqueda sin tildes: `lib/text.ts`.
 - **Biblioteca (T13)**: la fuente de verdad es `scripts/exercise-library.json` (id de free-exercise-db + nombre, grupo, equipo e instrucciones en español, con voseo). `npm run exercises:build` valida, baja fotos a `supabase/exercise-images/` (ignorada por git) y genera `supabase/seeds/exercises.sql` (no editar a mano; `on conflict do nothing` para no pisar ediciones del admin). El seed carga primero `seeds/exercises.sql` (`sql_paths`). `npm run db:reset` también sube las fotos. **`storage cp -r` a una carpeta que ya existe la anida**: el destino es la raíz del bucket (`ss:///exercise-images`).
@@ -23,9 +24,7 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 - Git desde el entorno del agente: el push por HTTPS falla con OpenSSL; usá `git -c http.sslBackend=schannel push`.
 - **Usuarios creados antes de aplicar las migraciones no tienen profile** (el trigger no existía): la app muestra "No se pudo cargar tu cuenta". Pasó con el admin de la demo; se arregló insertando su fila en `profiles`. En producción (T19): migraciones primero, usuarios después.
 - Consultas a la nube desde el agente: `supabase db query --remote --read-only` (escrituras: `--yes`, con permiso). `information_schema` no muestra grants al rol de solo lectura: usá `has_table_privilege`.
-- `vercel link` agrega `.env*` al `.gitignore` (tapa `.env.example`): sacarlo si vuelve a aparecer.
 - **Seed local**: `admin@deporteysalud.test` / `admin1234`; clientes `<nombre>.<apellido>@deporteysalud.test` / `cliente1234`. Los estados que deja están en el encabezado de pagos de `supabase/seed.sql` (10 al día, 3 por vencer, 5 vencidos, 2 inactivos). Son relativos a hoy: hacé `db reset` si pasaron días.
-- `/app` muestra solo un título (inicio del cliente en T16).
 - **Pendiente para T19**: los planes viven solo en el seed (precios de ejemplo); en producción hay que cargarlos.
 
 ## Cómo está armado

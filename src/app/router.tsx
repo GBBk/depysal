@@ -1,5 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router'
 import { LoginPage } from '@/features/auth/LoginPage'
+import { AccountPage } from '@/features/client-app/AccountPage'
+import { HomePage } from '@/features/client-app/HomePage'
+import { MyRoutinePage } from '@/features/client-app/MyRoutinePage'
 import { RequireArea } from '@/features/auth/RequireArea'
 import { ClientDetailPage } from '@/features/clients/ClientDetailPage'
 import { ClientsPage } from '@/features/clients/ClientsPage'
@@ -46,8 +49,11 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <ClientLayout />,
-        // El inicio del cliente se arma en T16.
-        children: [{ index: true, element: <h1 className="text-xl font-semibold">Inicio</h1> }],
+        children: [
+          { index: true, element: <HomePage /> },
+          { path: 'rutina', element: <MyRoutinePage /> },
+          { path: 'cuenta', element: <AccountPage /> },
+        ],
       },
     ],
   },
