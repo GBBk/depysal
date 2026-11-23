@@ -56,6 +56,7 @@ Cada pago genera un **período** de uso del plan pagado.
 - Solo se registran para planes con clases (2 y 3 días por semana). El pase libre no necesita registrar asistencias.
 - Antes de registrar se muestran las clases restantes. Si el cliente no tiene un período vigente con clases disponibles, se muestra el aviso "Debe abonar" y no se registra la asistencia.
 - Anular una asistencia cargada por error (se borra).
+- **Control de asistencias** (pantalla de recepción, `/admin/asistencias`): el admin escribe el DNI del cliente que llega y aprieta Enter. Se registra la asistencia de hoy sin más pasos y se muestra el resultado bien visible: nombre, "Asistencia registrada" y clases restantes, o por qué no se registró ("Debe abonar", pase libre, ya tenía la asistencia de hoy, DNI no encontrado o cliente dado de baja). Debajo, la lista de asistencias de hoy. Esta pantalla no anula asistencias: un error se anula desde la ficha del cliente.
 
 ### 2.5 Estado de cuota
 Se calcula en la vista `client_status`, no se guarda:

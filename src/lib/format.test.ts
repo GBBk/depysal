@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDate, formatMoney, monthRange, todayISO } from './format'
+import { formatDate, formatMoney, formatTime, monthRange, todayISO } from './format'
 
 describe('format', () => {
   it('todayISO usa la fecha de Argentina, no la UTC', () => {
@@ -11,6 +11,11 @@ describe('format', () => {
   it('formatDate muestra la fecha en es-AR sin correrla de día', () => {
     expect(formatDate('2026-03-01')).toBe('1/3/2026')
     expect(formatDate('2026-12-31')).toBe('31/12/2026')
+  })
+
+  it('formatTime muestra la hora de Argentina', () => {
+    expect(formatTime('2026-03-01T13:05:00Z')).toBe('10:05')
+    expect(formatTime('2026-03-02T01:30:00+00:00')).toBe('22:30')
   })
 
   it('monthRange devuelve el primer y el último día del mes', () => {

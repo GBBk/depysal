@@ -1,4 +1,5 @@
 import {
+  CalendarCheck,
   ClipboardList,
   CreditCard,
   Dumbbell,
@@ -15,6 +16,7 @@ type NavItem = { to: string; label: string; icon: LucideIcon; end: boolean }
 
 const links: NavItem[] = [
   { to: '/admin', label: 'Panel', icon: LayoutDashboard, end: true },
+  { to: '/admin/asistencias', label: 'Asistencias', icon: CalendarCheck, end: false },
   { to: '/admin/clientes', label: 'Clientes', icon: Users, end: false },
   { to: '/admin/ejercicios', label: 'Ejercicios', icon: Dumbbell, end: false },
   { to: '/admin/rutinas', label: 'Rutinas', icon: ClipboardList, end: false },
@@ -81,7 +83,7 @@ export function AdminLayout() {
 
       {/* Pestañas (celular) */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-sidebar-border bg-sidebar pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-sidebar-border bg-sidebar pb-[env(safe-area-inset-bottom)] md:hidden"
         aria-label="Principal"
       >
         {links.map((l) => (
@@ -91,7 +93,7 @@ export function AdminLayout() {
             end={l.end}
             className={({ isActive }) =>
               cn(
-                'flex flex-col items-center gap-1 py-2.5 text-xs font-medium',
+                'flex min-w-0 flex-col items-center gap-1 py-2.5 text-[11px] font-medium tracking-tight',
                 isActive ? 'text-primary' : 'text-sidebar-foreground/60',
               )
             }

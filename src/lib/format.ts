@@ -13,6 +13,16 @@ export function formatDate(iso: string): string {
   return new Date(`${iso}T12:00:00Z`).toLocaleDateString('es-AR', { timeZone: 'UTC' })
 }
 
+/** Hora de un timestamp ('2026-03-01T13:05:00Z') en Argentina: '10:05'. */
+export function formatTime(timestamp: string): string {
+  return new Date(timestamp).toLocaleTimeString('es-AR', {
+    timeZone: TIME_ZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  })
+}
+
 /** Primer y último día del mes de una fecha 'YYYY-MM-DD'. */
 export function monthRange(iso: string): { desde: string; hasta: string } {
   const [year, month] = iso.split('-').map(Number)

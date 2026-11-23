@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router'
+import { AttendanceControlPage } from '@/features/attendances/AttendanceControlPage'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { AccountPage } from '@/features/client-app/AccountPage'
 import { HomePage } from '@/features/client-app/HomePage'
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <DashboardPage /> },
+          { path: 'asistencias', element: <AttendanceControlPage /> },
           { path: 'clientes', element: <ClientsPage /> },
           { path: 'clientes/nuevo', element: <NewClientPage /> },
           { path: 'clientes/:id', element: <ClientDetailPage /> },
