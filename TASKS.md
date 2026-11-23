@@ -49,7 +49,7 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 
 ## Etapa 4 — Vista del cliente
 - [x] **T16 Cliente**: inicio con estado, plan, vigencia, clases restantes y período en espera; mi rutina con pestañas por día, fotos, instrucciones y video; marcar un día como hecho (y borrar la marca); cambiar contraseña.
-- [ ] **T17 PWA**: manifest e íconos; instalable en Android e iOS.
+- [x] **T17 PWA**: manifest e íconos; instalable en Android e iOS.
 
 ## Etapa 5 — Cierre
 - [ ] **T18 Revisión de seguridad**: un agente nuevo revisa todas las políticas RLS (incluido Storage), `client_periods`, `client_status`, el trigger de asistencias y la Edge Function contra SPEC §4.

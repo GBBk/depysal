@@ -173,7 +173,7 @@ Una fila por cliente: `client_id`, `periodo_actual` (el que cubre hoy, si existe
 - TanStack Query
 - react-hook-form + zod
 - Tailwind CSS + shadcn/ui
-- vite-plugin-pwa
+- PWA sin dependencias: `manifest.webmanifest`, íconos y un service worker propio (`public/sw.js`) que solo muestra una página "Sin conexión"
 - Vitest para los tests de RLS, de `client_periods` y de `client_status`
 - Deploy: Vercel o Netlify para el frontend, Supabase Cloud (plan gratuito)
 

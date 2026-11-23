@@ -3,8 +3,9 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 a T16 (… UI de ejercicios, editor de rutinas y asignación, vista del cliente; todo aplicado también en la nube).
-- Próxima: T17 (PWA: manifest e íconos, instalable en Android e iOS; vite-plugin-pwa está en la spec pero no instalado: preguntar antes de agregarlo).
+- Hechas: T01 a T17 (… editor de rutinas y asignación, vista del cliente, PWA; todo aplicado también en la nube).
+- Próxima: T18 (revisión de seguridad por un agente nuevo contra SPEC §4: RLS de todas las tablas y Storage, `client_periods`, `client_status`, triggers, funciones de rutinas y la Edge Function).
+- **PWA (T17)**: sin dependencias (el usuario eligió no sumar vite-plugin-pwa). `public/manifest.webmanifest`, íconos en `public/icons/` (generados una vez desde `icon.svg` dibujándolo en un canvas), `public/sw.js` solo para la página `offline.html` (no cachea la app ni datos: siempre la versión publicada). Se registra solo en producción (`import.meta.env.PROD` en `main.tsx`). Para probarlo: `npm run build` + config `preview` (puerto 4173).
 - **Vista del cliente (T16)**: `/app` (inicio), `/app/rutina`, `/app/cuenta`, con pestañas abajo (`ClientLayout`). Hooks en `features/client-app/api.ts` (`useMy*`, el RLS filtra). La pestaña de día sugerida (`suggestedDay`: la que sigue a la última hecha) se calcula **una vez al montar**; si se recalcula, al marcar el día la pantalla salta al siguiente. `PhotoCycle` alterna las 2 fotos (o las muestra juntas con reduced motion). Contraseña mínima 6 (igual que Auth).
 - **Rutinas (T15)**: guardar y asignar van por funciones atómicas `save_routine` (reemplaza todos los ítems) y `assign_routine` (desactiva la anterior y copia la plantilla; sin plantilla = vacía). `/admin/rutinas` = plantillas; la rutina de cada cliente se asigna y ve desde su ficha. El editor usa un array plano de ítems (con `dia`) en react-hook-form; `orden` se recalcula al guardar (`toSaveItems`). Plantillas de ejemplo en `supabase/seeds/routine-templates.sql` (idempotente por nombre; también cargadas en la nube).
 - **Ejercicios (T14)**: `/admin/ejercicios`. Fotos con `usePhotoUrls(paths)` (un `createSignedUrls` por lote; reusalo en rutinas y en la vista del cliente) y `ExercisePhoto`. Fotos propias en `propios/<id>/<slot>-<timestamp>.<ext>`; al reemplazar o borrar se eliminan solo las propias (las importadas no). `GRUPOS`/`EQUIPOS` en `exercises/options.ts` (mismas listas que el CHECK y el script). Búsqueda sin tildes: `lib/text.ts`.
@@ -39,7 +40,6 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 ## Decisiones (y por qué)
 - **Registro público desactivado** (`enable_signup = false`): la spec no lo permite y con la clave pública cualquiera se registraba.
 - **`handle_new_user` siempre crea `rol = 'client'`**: el rol nunca sale de metadatos; un admin se crea actualizando `profiles.rol`. (`app_metadata` no sirve: GoTrue lo escribe después del INSERT.)
-- **Sin DELETE en `profiles`** (baja lógica). `profiles.dni` nullable y único (un admin puede no tenerlo).
 - **Estado con período en espera = `al_dia`** aunque el actual ya no esté vigente (p. ej. usó la última clase hoy y ya pagó el siguiente): la spec dice "o ya tiene el siguiente período pago en espera" y el cliente no pierde nada. Si hay que cambiarlo, es en la vista y con test.
 - **Tests con service role**: `SUPABASE_SERVICE_ROLE_KEY` en `.env` (sin `VITE_`). Helpers en `tests/helpers.ts`.
 

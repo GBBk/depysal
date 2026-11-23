@@ -71,6 +71,15 @@ La secret key **no** va en Vercel: solo la usa la Edge Function, que ya la tiene
 
 **4. Probar.** Entrá con tu admin, creá un cliente (prueba la Edge Function), registrá un pago y una asistencia, y revisá el panel. Los clientes del seed entran con `<nombre>.<apellido>@deporteysalud.test` / `cliente1234`.
 
+## Instalar la app en el celular
+
+La app se instala como una aplicación más (ícono naranja con el nombre "DS", pantalla completa), sin tienda:
+
+- **Android (Chrome):** abrir la URL, menú ⋮ → **Instalar app** (o **Agregar a pantalla principal**).
+- **iPhone (Safari):** abrir la URL, botón **Compartir** → **Agregar a inicio**.
+
+Necesita internet para ver los datos; sin conexión muestra una página "Sin conexión" en lugar del error del navegador.
+
 ## Scripts
 
 | Script                                | Qué hace                                                                     |
