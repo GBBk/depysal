@@ -52,5 +52,9 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 - [x] **T17 PWA**: manifest e íconos; instalable en Android e iOS.
 
 ## Etapa 5 — Cierre
-- [ ] **T18 Revisión de seguridad**: un agente nuevo revisa todas las políticas RLS (incluido Storage), `client_periods`, `client_status`, el trigger de asistencias y la Edge Function contra SPEC §4.
-- [ ] **T19 Deploy de producción** y alta del admin real.
+- [x] **T18 Revisión de seguridad**: un agente nuevo revisa todas las políticas RLS (incluido Storage), `client_periods`, `client_status`, el trigger de asistencias y la Edge Function contra SPEC §4.
+- [ ] **T19 Deploy de producción** y alta del admin real. Checklist de la revisión de seguridad (T18):
+  - Proyecto de Supabase nuevo (no la demo, que tiene clientes ficticios con contraseña conocida).
+  - `db push --remote` **sin** `--include-seed`; cargar solo `seeds/exercises.sql` y `seeds/routine-templates.sql` (y las fotos), y los planes reales.
+  - En el panel: registro público apagado (verificar con un intento de alta) y decidir "Secure password change" (pedir la contraseña actual al cambiarla).
+  - Migraciones primero, después crear el admin real.

@@ -3,8 +3,9 @@
 Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 líneas.
 
 ## Estado actual
-- Hechas: T01 a T17 (… editor de rutinas y asignación, vista del cliente, PWA; todo aplicado también en la nube).
-- Próxima: T18 (revisión de seguridad por un agente nuevo contra SPEC §4: RLS de todas las tablas y Storage, `client_periods`, `client_status`, triggers, funciones de rutinas y la Edge Function).
+- Hechas: T01 a T18 (… vista del cliente, PWA, revisión de seguridad; todo aplicado también en la nube).
+- Próxima: T19 (deploy de producción; seguir el checklist de seguridad que quedó en TASKS.md).
+- **Seguridad (T18)**: sin hallazgos críticos ni altos. Corregido en `20261126000000_security_review.sql`: `is_admin()` exige `activo` (un admin dado de baja pierde acceso), `plans` solo para admin o cliente activo, `payments.clases` no se puede editar a mano (se conserva salvo cambio de plan), lock por cliente en el trigger de asistencias, sin EXECUTE por defecto para anon en funciones nuevas (dar `grant` explícito). Aceptado/pendiente: el cliente ve sus propias `notas` (las escribe el admin), cambio de contraseña sin pedir la actual (decidir en T19).
 - **PWA (T17)**: sin dependencias (el usuario eligió no sumar vite-plugin-pwa). `public/manifest.webmanifest`, íconos en `public/icons/` (generados una vez desde `icon.svg` dibujándolo en un canvas), `public/sw.js` solo para la página `offline.html` (no cachea la app ni datos: siempre la versión publicada). Se registra solo en producción (`import.meta.env.PROD` en `main.tsx`). Para probarlo: `npm run build` + config `preview` (puerto 4173).
 - **Vista del cliente (T16)**: `/app` (inicio), `/app/rutina`, `/app/cuenta`, con pestañas abajo (`ClientLayout`). Hooks en `features/client-app/api.ts` (`useMy*`, el RLS filtra). La pestaña de día sugerida (`suggestedDay`: la que sigue a la última hecha) se calcula **una vez al montar**; si se recalcula, al marcar el día la pantalla salta al siguiente. `PhotoCycle` alterna las 2 fotos (o las muestra juntas con reduced motion). Contraseña mínima 6 (igual que Auth).
 - **Rutinas (T15)**: guardar y asignar van por funciones atómicas `save_routine` (reemplaza todos los ítems) y `assign_routine` (desactiva la anterior y copia la plantilla; sin plantilla = vacía). `/admin/rutinas` = plantillas; la rutina de cada cliente se asigna y ve desde su ficha. El editor usa un array plano de ítems (con `dia`) en react-hook-form; `orden` se recalcula al guardar (`toSaveItems`). Plantillas de ejemplo en `supabase/seeds/routine-templates.sql` (idempotente por nombre; también cargadas en la nube).
@@ -26,7 +27,6 @@ Contexto vivo entre sesiones. Se actualiza al terminar cada tarea. Máximo ~50 l
 - **Usuarios creados antes de aplicar las migraciones no tienen profile** (el trigger no existía): la app muestra "No se pudo cargar tu cuenta". Pasó con el admin de la demo; se arregló insertando su fila en `profiles`. En producción (T19): migraciones primero, usuarios después.
 - Consultas a la nube desde el agente: `supabase db query --remote --read-only` (escrituras: `--yes`, con permiso). `information_schema` no muestra grants al rol de solo lectura: usá `has_table_privilege`.
 - **Seed local**: `admin@deporteysalud.test` / `admin1234`; clientes `<nombre>.<apellido>@deporteysalud.test` / `cliente1234`. Los estados que deja están en el encabezado de pagos de `supabase/seed.sql` (10 al día, 3 por vencer, 5 vencidos, 2 inactivos). Son relativos a hoy: hacé `db reset` si pasaron días.
-- **Pendiente para T19**: los planes viven solo en el seed (precios de ejemplo); en producción hay que cargarlos.
 
 ## Cómo está armado
 - Auth: `AuthProvider` → `useAuth()`; `useProfile()`; `RequireArea` protege `/admin` y `/app` (reglas en `features/auth/access.ts`).
