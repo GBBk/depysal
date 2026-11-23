@@ -17,6 +17,7 @@ import { StatusBadge } from '@/features/clients/StatusBadge'
 import { formatDate, formatMoney, monthRange, todayISO } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { useMonthlyIncome } from './api'
+import { ExportContactsButton } from './ExportContactsButton'
 import { reminderMessage, toWhatsAppNumber, whatsAppUrl } from './whatsapp'
 
 const MAX_RESULTS = 10
@@ -62,7 +63,11 @@ export function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Panel" description={today.charAt(0).toUpperCase() + today.slice(1)} />
+      <PageHeader
+        title="Panel"
+        description={today.charAt(0).toUpperCase() + today.slice(1)}
+        actions={<ExportContactsButton clients={clients.data} />}
+      />
 
       <Card>
         <CardContent className="flex flex-col gap-3">

@@ -55,6 +55,8 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
 - [x] **T18 Revisión de seguridad**: un agente nuevo revisa todas las políticas RLS (incluido Storage), `client_periods`, `client_status`, el trigger de asistencias y la Edge Function contra SPEC §4.
 - [x] **T18b Control de asistencias por DNI** (pedido del usuario, SPEC §2.4): pantalla `/admin/asistencias` para la recepción; DNI + Enter registra la asistencia de hoy y muestra el resultado; lista de asistencias de hoy, sin botones para anular (se anula desde la ficha).
   - Terminado: tests de la lógica (DNI, ya registrada hoy, debe abonar, pase libre, clases restantes) y flujo probado en el navegador.
+- [x] **T18c Exportar contactos** (pedido del dueño, SPEC §2.6): botón en el panel que baja un `.vcf` con los clientes activos con teléfono válido (en formato +549…), para la lista de difusión de WhatsApp.
+  - Terminado: tests del archivo (formato, teléfonos normalizados, sin bajas ni teléfonos inválidos, caracteres escapados).
 - [ ] **T19 Deploy de producción** y alta del admin real. Checklist de la revisión de seguridad (T18):
   - Proyecto de Supabase nuevo (no la demo, que tiene clientes ficticios con contraseña conocida).
   - `db push --remote` **sin** `--include-seed`; cargar solo `seeds/exercises.sql` y `seeds/routine-templates.sql` (y las fotos), y los planes reales.
