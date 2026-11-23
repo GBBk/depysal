@@ -57,8 +57,11 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
   - Terminado: tests de la lógica (DNI, ya registrada hoy, debe abonar, pase libre, clases restantes) y flujo probado en el navegador.
 - [x] **T18c Exportar contactos** (pedido del dueño, SPEC §2.6): botón en el panel que baja un `.vcf` con los clientes activos con teléfono válido (en formato +549…), para la lista de difusión de WhatsApp.
   - Terminado: tests del archivo (formato, teléfonos normalizados, sin bajas ni teléfonos inválidos, caracteres escapados).
+- [x] **T18d Kiosco de asistencias** (pedido del usuario, SPEC §2.4 y §4): rol `kiosk`, función `kiosk_check_in` y pantalla `/kiosco` donde el cliente pone su DNI; `/admin/asistencias` queda solo con la lista de hoy (sin campo de DNI).
+  - Terminado: tests de que el kiosco no lee ningún dato y de cada resultado de la función (también que solo la ejecuta un kiosco activo); flujo probado en el navegador.
 - [ ] **T19 Deploy de producción** y alta del admin real. Checklist de la revisión de seguridad (T18):
   - Proyecto de Supabase nuevo (no la demo, que tiene clientes ficticios con contraseña conocida).
   - `db push --remote` **sin** `--include-seed`; cargar solo `seeds/exercises.sql` y `seeds/routine-templates.sql` (y las fotos), y los planes reales.
   - En el panel: registro público apagado (verificar con un intento de alta) y decidir "Secure password change" (pedir la contraseña actual al cambiarla).
   - Migraciones primero, después crear el admin real.
+  - Crear la cuenta del kiosco (README), dejar la tablet logueada en `/kiosco` y fijar la pantalla (Android "Fijar app" / iPad "Acceso guiado").

@@ -4,6 +4,7 @@ import { canEnter, homePath } from './access'
 const admin = { rol: 'admin', activo: true }
 const client = { rol: 'client', activo: true }
 const inactiveClient = { rol: 'client', activo: false }
+const kiosk = { rol: 'kiosk', activo: true }
 
 describe('navegación por rol', () => {
   it('cada rol termina en su sección', () => {
@@ -25,5 +26,18 @@ describe('navegación por rol', () => {
   it('un cliente inactivo queda bloqueado', () => {
     expect(canEnter('app', inactiveClient)).toBe('inactive')
     expect(canEnter('admin', inactiveClient)).toBe('forbidden')
+  })
+
+  it('el kiosco entra solo a /kiosco, y nadie más entra ahí', () => {
+    expect(homePath(kiosk)).toBe('/kiosco')
+    expect(canEnter('kiosk', kiosk)).toBe('ok')
+    expect(canEnter('admin', kiosk)).toBe('forbidden')
+    expect(canEnter('app', kiosk)).toBe('forbidden')
+    expect(canEnter('kiosk', admin)).toBe('forbidden')
+    expect(canEnter('kiosk', client)).toBe('forbidden')
+  })
+
+  it('un kiosco inactivo queda bloqueado', () => {
+    expect(canEnter('kiosk', { ...kiosk, activo: false })).toBe('inactive')
   })
 })

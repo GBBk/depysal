@@ -2,6 +2,7 @@
 --
 -- Usuarios (contraseñas de prueba, solo locales):
 --   admin@deporteysalud.test      / admin1234   (rol admin)
+--   kiosco@deporteysalud.test     / kiosco1234  (rol kiosk, pantalla /kiosco)
 --   <nombre>.<apellido>@deporteysalud.test / cliente1234   (20 clientes; 2 inactivos)
 --
 -- Los ejercicios se importan en T13 (biblioteca curada de free-exercise-db).
@@ -57,6 +58,19 @@ begin
     '{"nombre": "Admin", "apellido": "Gimnasio"}'
   );
   update public.profiles set rol = 'admin' where id = v_id;
+end;
+$$;
+
+-- Kiosco de recepción (/kiosco)
+do $$
+declare
+  v_id uuid;
+begin
+  v_id := pg_temp.seed_user(
+    'kiosco@deporteysalud.test', 'kiosco1234',
+    '{"nombre": "Kiosco", "apellido": "Recepción"}'
+  );
+  update public.profiles set rol = 'kiosk' where id = v_id;
 end;
 $$;
 

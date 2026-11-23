@@ -9,8 +9,9 @@ Objetivo: lo mínimo y funcional para gestionar **clientes**, **pagos**, **asist
 |---|---|---|
 | `admin` | Dueño / entrenador / recepción | Todo: clientes, planes, pagos, asistencias, ejercicios, rutinas |
 | `client` | Socio del gimnasio | Ver su rutina activa, su estado de cuota y sus clases restantes |
+| `kiosk` | Tablet de recepción | Solo registrar la asistencia de hoy por DNI (pantalla `/kiosco`); no ve datos |
 
-- No hay registro público. Las cuentas de clientes las crea el admin con una contraseña inicial.
+- No hay registro público. Las cuentas de clientes las crea el admin con una contraseña inicial. La cuenta del kiosco se crea una vez al instalar (ver README).
 - Login con email + contraseña (Supabase Auth). El cliente puede cambiar su contraseña.
 - Puede haber más de un admin.
 
@@ -56,7 +57,8 @@ Cada pago genera un **período** de uso del plan pagado.
 - Solo se registran para planes con clases (2 y 3 días por semana). El pase libre no necesita registrar asistencias.
 - Antes de registrar se muestran las clases restantes. Si el cliente no tiene un período vigente con clases disponibles, se muestra el aviso "Debe abonar" y no se registra la asistencia.
 - Anular una asistencia cargada por error (se borra).
-- **Control de asistencias** (pantalla de recepción, `/admin/asistencias`): el admin escribe el DNI del cliente que llega y aprieta Enter. Se registra la asistencia de hoy sin más pasos y se muestra el resultado bien visible: nombre, "Asistencia registrada" y clases restantes, o por qué no se registró ("Debe abonar", pase libre, ya tenía la asistencia de hoy, DNI no encontrado o cliente dado de baja). Debajo, la lista de asistencias de hoy. Esta pantalla no anula asistencias: un error se anula desde la ficha del cliente.
+- **Kiosco** (`/kiosco`, en la tablet de recepción con la cuenta `kiosk`): el cliente que llega escribe su DNI y aprieta Enter. Se registra la asistencia de hoy sin más pasos y se muestra el resultado bien visible durante unos segundos: nombre de pila (sin apellido), "Asistencia registrada" y clases restantes, o por qué no se registró ("Debe abonar", pase libre, ya tenía la asistencia de hoy, DNI no encontrado o cliente dado de baja). El kiosco no muestra ningún otro dato ni anula asistencias.
+- **Asistencias de hoy** (`/admin/asistencias`): lista de quién vino hoy, con la hora. Un error (por ejemplo, alguien que puso un DNI ajeno) se anula desde la ficha del cliente.
 
 ### 2.5 Estado de cuota
 Se calcula en la vista `client_status`, no se guarda:
@@ -104,7 +106,7 @@ Se calcula en la vista `client_status`, no se guarda:
 ## 3. Modelo de datos (Supabase / Postgres)
 
 ```
-profiles         id (= auth.users.id), rol ('admin'|'client'), nombre, apellido, dni (único),
+profiles         id (= auth.users.id), rol ('admin'|'client'|'kiosk'), nombre, apellido, dni (único),
                  telefono, email, notas, activo, created_at
 plans            id, nombre, precio, clases (int, null = ilimitadas), activo
 payments         id, client_id → profiles, plan_id → plans, monto, medio, fecha_pago,
@@ -165,6 +167,7 @@ Una fila por cliente: `client_id`, `periodo_actual` (el que cubre hoy, si existe
   - `plans` y `exercises`: todos. Fotos en `exercise-images`: lectura para usuarios logueados; escritura solo admin.
   - `routines` / `routine_items`: solo su rutina activa e ítems; nunca plantillas.
   - `routine_completions`: lee, crea y borra solo las propias, y solo de su rutina activa.
+- `kiosk`: no lee ninguna tabla ni foto (solo su propia fila de `profiles`). Registra asistencias únicamente con la función `kiosk_check_in(dni)`, `SECURITY DEFINER` (la otra excepción junto a `is_admin()`): solo la ejecuta un usuario `kiosk` activo, registra solo la asistencia de **hoy** (fecha de Argentina; el kiosco no la elige) y devuelve solo el resultado, el nombre de pila, las clases restantes y el vencimiento.
 - `client_periods` es `SECURITY INVOKER` y `client_status` usa `security_invoker = true`: las dos respetan el RLS, así que un cliente solo puede calcular sus propios períodos.
 - La creación de usuarios cliente se hace con una Edge Function que usa la service role key y verifica que quien llama sea admin. La service role key **nunca** va en el frontend.
 
@@ -182,7 +185,7 @@ Una fila por cliente: `client_id`, `periodo_actual` (el que cubre hoy, si existe
 ## 6. Fuera de alcance (no implementar sin pedido explícito)
 - Pasarela de pagos (Mercado Pago, etc.)
 - Facturación electrónica AFIP/ARCA
-- Check-in hecho por el propio cliente (QR, molinetes, botón en la app). Marcar un día de rutina como hecho no es un check-in.
+- Check-in hecho por el propio cliente (QR, molinetes, botón en la app), salvo el kiosco por DNI de §2.4. Marcar un día de rutina como hecho no es un check-in.
 - Límite de clases por semana (solo se controla el total del período)
 - Métricas de progreso o gráficos
 - Registro de cargas, series o repeticiones realizadas (el cliente solo marca el día como hecho)

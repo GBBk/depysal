@@ -54,7 +54,7 @@ tests/            tests de RLS, client_periods y client_status (Vitest contra Su
 
 ## Seguridad (no negociable)
 - Toda tabla nueva lleva RLS habilitado y políticas en la **misma migración**.
-- Toda vista se crea con `security_invoker = true` y toda función que lea datos de clientes es `SECURITY INVOKER` (la única excepción es `is_admin()`).
+- Toda vista se crea con `security_invoker = true` y toda función que lea datos de clientes es `SECURITY INVOKER` (las únicas excepciones son `is_admin()` y `kiosk_check_in()`, ver SPEC §4).
 - La autorización se resuelve en la base de datos. Ocultar algo en la UI no cuenta como seguridad.
 - La service role key solo se usa en la Edge Function, nunca en `src/`.
 - Cada política nueva lleva al menos un test que verifique que un cliente **no** puede ver datos de otro.

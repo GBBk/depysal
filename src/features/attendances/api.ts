@@ -1,7 +1,5 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
-import { todayISO } from '@/lib/format'
 import { supabase } from '@/lib/supabase'
-import { checkInDecision, normalizeDni, type CheckInResult } from './checkIn'
 
 export function useClientAttendances(clientId: string) {
   return useQuery({
@@ -20,7 +18,7 @@ export function useClientAttendances(clientId: string) {
 
 /**
  * Una asistencia cambia las clases usadas y el estado: se refresca todo lo que depende de ella
- * (`['attendances']` entero, así también la lista de hoy del control de asistencias).
+ * (`['attendances']` entero, así también la lista de asistencias de hoy).
  */
 function invalidateClientAttendances(queryClient: QueryClient, clientId: string) {
   return Promise.all([
@@ -54,10 +52,14 @@ export function useDeleteAttendance(clientId: string) {
   })
 }
 
-/** Asistencias de un día con el nombre del cliente (control de asistencias), la última primero. */
+/**
+ * Asistencias de un día con el nombre del cliente, la última primero. Se refresca sola: los
+ * clientes se anotan desde el kiosco, en otro dispositivo.
+ */
 export function useDayAttendances(fecha: string) {
   return useQuery({
     queryKey: ['attendances', 'day', fecha],
+    refetchInterval: 30_000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('attendances')
@@ -68,71 +70,6 @@ export function useDayAttendances(fecha: string) {
         .order('created_at', { ascending: false })
       if (error) throw error
       return data
-    },
-  })
-}
-
-/**
- * Recepción: busca al cliente por DNI y, si puede, registra la asistencia de hoy.
- * Lo que no se registra (debe abonar, pase libre, ya vino…) vuelve como resultado, no como error.
- */
-export function useCheckIn() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: async (input: string): Promise<CheckInResult> => {
-      const dni = normalizeDni(input)
-      if (!dni) return { kind: 'dni_invalido' }
-
-      const found = await supabase
-        .from('profiles')
-        .select('id, nombre, apellido, activo')
-        .eq('rol', 'client')
-        .eq('dni', dni)
-        .maybeSingle()
-      if (found.error) throw found.error
-      if (!found.data) return { kind: 'no_encontrado', dni }
-      const { activo, ...client } = found.data
-      if (!activo) return { kind: 'inactivo', client }
-
-      const fecha = todayISO()
-      const [statusRes, todayRes] = await Promise.all([
-        supabase
-          .from('client_status')
-          .select('periodo_actual, clases_restantes, tiene_periodo_en_espera, hasta')
-          .eq('client_id', client.id)
-          .single(),
-        supabase
-          .from('attendances')
-          .select('id')
-          .eq('client_id', client.id)
-          .eq('fecha', fecha)
-          .maybeSingle(),
-      ])
-      if (statusRes.error) throw statusRes.error
-      if (todayRes.error) throw todayRes.error
-      const status = statusRes.data
-
-      const decision = checkInDecision(status, todayRes.data !== null)
-      if (decision.action !== 'registrar') return { kind: decision.action, client, status }
-
-      const inserted = await supabase.from('attendances').insert({ client_id: client.id, fecha })
-      if (inserted.error) {
-        // Otra persona la registró recién, o la base la rechazó (trigger).
-        if (inserted.error.code === '23505') return { kind: 'ya_registrada', client, status }
-        if (inserted.error.message === 'debe_abonar') return { kind: 'debe_abonar', client, status }
-        throw inserted.error
-      }
-      return {
-        kind: 'registrada',
-        client,
-        status,
-        restantes: decision.restantes - 1,
-      }
-    },
-    onSuccess: (result) => {
-      if (result.kind === 'registrada') {
-        return invalidateClientAttendances(queryClient, result.client.id)
-      }
     },
   })
 }

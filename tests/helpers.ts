@@ -33,7 +33,7 @@ export type TestUser = { id: string; email: string; db: Db }
 
 /** Crea un usuario con el rol indicado y devuelve un cliente con su sesión iniciada. */
 export async function createUser(
-  rol: 'admin' | 'client',
+  rol: 'admin' | 'client' | 'kiosk',
   userMetadata: Record<string, unknown> = {},
 ): Promise<TestUser> {
   const email = `test-${randomUUID()}@deporteysalud.test`
@@ -47,10 +47,10 @@ export async function createUser(
   })
   if (error) throw error
 
-  if (rol === 'admin') {
+  if (rol !== 'client') {
     const { error: promoteError } = await service
       .from('profiles')
-      .update({ rol: 'admin' })
+      .update({ rol })
       .eq('id', data.user.id)
     if (promoteError) throw promoteError
   }

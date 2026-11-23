@@ -12,6 +12,7 @@ import { NewClientPage } from '@/features/clients/NewClientPage'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { ExerciseFormPage } from '@/features/exercises/ExerciseFormPage'
 import { ExercisesPage } from '@/features/exercises/ExercisesPage'
+import { KioskPage } from '@/features/kiosk/KioskPage'
 import { PlansPage } from '@/features/plans/PlansPage'
 import { RoutineEditorPage } from '@/features/routines/RoutineEditorPage'
 import { RoutinesPage } from '@/features/routines/RoutinesPage'
@@ -58,6 +59,11 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '/kiosco',
+    element: <RequireArea area="kiosk" />,
+    children: [{ index: true, element: <KioskPage /> }],
   },
   { path: '*', element: <Navigate to="/" replace /> },
 ])

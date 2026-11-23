@@ -23,7 +23,7 @@ npm run db:reset      # aplica migraciones y carga el seed
 npm run dev           # http://localhost:5173
 ```
 
-Usuarios del seed (solo locales): `admin@deporteysalud.test` / `admin1234` y los clientes `<nombre>.<apellido>@deporteysalud.test` / `cliente1234` (por ejemplo, `ana.perez@deporteysalud.test`).
+Usuarios del seed (solo locales): `admin@deporteysalud.test` / `admin1234`, el kiosco `kiosco@deporteysalud.test` / `kiosco1234` y los clientes `<nombre>.<apellido>@deporteysalud.test` / `cliente1234` (por ejemplo, `ana.perez@deporteysalud.test`).
 
 ## Deploy de demo (Supabase Cloud + Vercel)
 
@@ -70,6 +70,21 @@ delete from auth.users where email = 'admin@deporteysalud.test'; -- el admin del
 La secret key **no** va en Vercel: solo la usa la Edge Function, que ya la tiene en Supabase. `vercel.json` hace que todas las rutas sirvan `index.html`.
 
 **4. Probar.** Entrá con tu admin, creá un cliente (prueba la Edge Function), registrá un pago y una asistencia, y revisá el panel. Los clientes del seed entran con `<nombre>.<apellido>@deporteysalud.test` / `cliente1234`.
+
+## Kiosco de asistencias (tablet de recepción)
+
+En la tablet se entra con una cuenta **kiosco**: solo sirve para que cada cliente escriba su DNI y se registre la asistencia de hoy; no puede ver ni cambiar ningún dato. Para crearla, una sola vez:
+
+1. En Supabase, _Authentication → Users → Add user_: un email para el kiosco (por ejemplo, `kiosco@<tu-dominio>`) y una contraseña segura, con _Auto Confirm User_.
+2. En _SQL Editor_:
+
+```sql
+update public.profiles set rol = 'kiosk', nombre = 'Kiosco' where email = '<email-del-kiosco>';
+```
+
+3. En la tablet, abrí la app, iniciá sesión con esa cuenta (va sola a `/kiosco`) y dejá la pantalla fijada: en Android, _Fijar app_; en iPad, _Acceso guiado_.
+
+Si la tablet se pierde, desactivá la cuenta: `update public.profiles set activo = false where email = '<email-del-kiosco>';`. Lo que se anotó por error se anula desde la ficha del cliente, y la lista de quién vino hoy está en _Asistencias_ del panel.
 
 ## Instalar la app en el celular
 

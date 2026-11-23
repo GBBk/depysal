@@ -247,6 +247,11 @@ isOneToOne: false
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
+"kiosk_check_in":
+{ Args: { "p_dni": string }; Returns: {
+              "clases_restantes": number,"hasta": string,"nombre": string,"resultado": string,"tiene_periodo_en_espera": boolean
+            }[]
+                           },
 "save_routine":
 { Args: { "p_items": Json,"p_nombre": string,"p_routine_id": number }; Returns: undefined
                            }
