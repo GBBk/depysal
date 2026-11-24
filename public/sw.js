@@ -1,7 +1,7 @@
 // Service worker mínimo (T17): la app se puede instalar y, si no hay conexión, muestra una
 // página propia en lugar del error del navegador. No guarda la app ni los datos en caché:
 // siempre se carga la versión publicada y los datos frescos de Supabase.
-const CACHE = 'offline-v1'
+const CACHE = 'offline-v2'
 const OFFLINE_URL = '/offline.html'
 const OFFLINE_ASSETS = [OFFLINE_URL, '/icons/icon-192.png']
 
