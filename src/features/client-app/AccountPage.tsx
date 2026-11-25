@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { useAuth } from '@/features/auth/auth-context'
 import { useProfile } from '@/features/auth/api'
 import { FormField } from '@/features/clients/FormField'
+import { WeatherCredit } from '@/features/weather/WeatherCredit'
 import { useChangePassword } from './api'
 import { passwordSchema, type PasswordValues } from './logic'
 
@@ -78,6 +79,8 @@ export function AccountPage() {
           </form>
         </CardContent>
       </Card>
+
+      <WeatherCredit />
     </div>
   )
 }

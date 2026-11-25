@@ -98,6 +98,7 @@ Se calcula en la vista `client_status`, no se guarda:
 
 ### 2.9 Vista del cliente (mobile-first, instalable como PWA)
 - **Inicio:** estado de cuota (badge con color), plan actual, vigencia hasta, clases restantes (si el plan tiene clases) y, si existe, el próximo período en espera.
+- **Clima en el inicio:** una tarjeta con la temperatura de hoy en Arroyito y una sola recomendación para entrenar según el pronóstico de lo que queda del día (tormenta, lluvia, mucho calor, viento, frío, calor o lindo día). Datos de MET Norway (gratis, también para uso comercial, CC BY 4.0: la atribución va al pie de **Cuenta**), pedidos desde el navegador sin clave. Si el pronóstico no carga, la tarjeta no aparece.
 - **Mi rutina:** pestañas por día; cada ejercicio muestra sus fotos (alternando posición inicial y final), series × reps, descanso, notas, las instrucciones (desplegables) y el link al video. En cada día: botón **Marcar como hecho hoy** y la fecha de la última vez que lo hizo.
 - **Cambiar contraseña.**
 - El cliente no puede editar nada más.

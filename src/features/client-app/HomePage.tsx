@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { Card, CardContent } from '@/components/ui/card'
 import { useProfile } from '@/features/auth/api'
 import { StatusBadge } from '@/features/clients/StatusBadge'
+import { WeatherCard } from '@/features/weather/WeatherCard'
 import { formatDate } from '@/lib/format'
 import { useMyRoutine, useMyStatus, useMyWaitingPeriods } from './api'
 
@@ -23,6 +24,7 @@ export function HomePage() {
         Hola{profile.data ? `, ${profile.data.nombre}` : ''}
       </h1>
 
+      <WeatherCard />
       <Card>
         <CardContent className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-2">
