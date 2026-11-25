@@ -72,6 +72,7 @@ Se calcula en la vista `client_status`, no se guarda:
 - Ingresos del mes en curso (suma de pagos no anulados).
 - En cada cliente vencido o por vencer: botón **WhatsApp** que abre `https://wa.me/<telefono>?text=<mensaje>` con un recordatorio ya escrito.
 - Botón **Exportar contactos**: baja un archivo `.vcf` con los clientes activos que tienen un teléfono válido, para cargarlos de una vez en la agenda del celular y armar una lista de difusión en WhatsApp (el envío lo hace el dueño desde WhatsApp; la app no manda mensajes).
+- **Exportar pagos**: se elige un mes (por defecto, el actual) y baja un `.csv` para Excel con los pagos de ese mes: fecha, cliente, DNI, plan, clases, medio, monto y si está anulado. Los anulados se incluyen marcados y no suman al total de la última fila.
 
 ### 2.7 Ejercicios (admin)
 - Cada ejercicio tiene: nombre, grupo muscular (lista fija), equipo (lista fija), instrucciones, hasta 2 fotos (posición inicial y final) y link a video opcional (por ejemplo, YouTube). Todo en español.

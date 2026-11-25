@@ -13,6 +13,7 @@ import {
   type ClientStatus,
 } from '@/features/clients/api'
 import { filterClients } from '@/features/clients/search'
+import { ExportPaymentsButton } from '@/features/payments/ExportPaymentsButton'
 import { StatusBadge } from '@/features/clients/StatusBadge'
 import { formatDate, formatMoney, monthRange, todayISO } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -66,7 +67,13 @@ export function DashboardPage() {
       <PageHeader
         title="Panel"
         description={today.charAt(0).toUpperCase() + today.slice(1)}
-        actions={<ExportContactsButton clients={clients.data} />}
+        actions={
+          // Alineados arriba: cada botón puede mostrar debajo una línea con el resultado.
+          <div className="flex flex-wrap items-start justify-end gap-2">
+            <ExportPaymentsButton />
+            <ExportContactsButton clients={clients.data} />
+          </div>
+        }
       />
 
       <Card>

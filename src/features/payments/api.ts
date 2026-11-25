@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { buildPaymentsCsv, monthBounds } from './export'
 import { toPaymentInsert, type PaymentValues } from './schemas'
 
 export function useClientPayments(clientId: string) {
@@ -65,5 +66,25 @@ export function useAnnulPayment(clientId: string) {
       if (error) throw error
     },
     onSuccess: () => invalidateClientPayments(queryClient, clientId),
+  })
+}
+
+/** Pagos de un mes ('YYYY-MM') para exportar a Excel, anulados incluidos. Solo admin (RLS). */
+export function useExportPayments() {
+  return useMutation({
+    mutationFn: async (month: string) => {
+      const { desde, hasta } = monthBounds(month)
+      const { data, error } = await supabase
+        .from('payments')
+        .select(
+          'id, fecha_pago, monto, medio, anulado, clases, plans(nombre), profiles(nombre, apellido, dni)',
+        )
+        .gte('fecha_pago', desde)
+        .lte('fecha_pago', hasta)
+        .order('fecha_pago')
+        .order('id')
+      if (error) throw error
+      return buildPaymentsCsv(data)
+    },
   })
 }

@@ -61,6 +61,8 @@ Reglas: una tarea por vez, en orden. Cada tarea va en su propio commit. Una tare
   - Terminado: tests de que el kiosco no lee ningún dato y de cada resultado de la función (también que solo la ejecuta un kiosco activo); flujo probado en el navegador.
 - [x] **T18e Clima en el inicio del cliente** (pedido del usuario, SPEC §2.9): pronóstico de Arroyito (MET Norway) y una recomendación según el clima de hoy (por ejemplo, con mucho calor: traer la botella con agua).
   - Terminado: tests del resumen del día (solo lo que queda de hoy en Argentina) y de cada recomendación con su prioridad; tarjeta probada en el navegador.
+- [x] **T18f Exportar pagos** (pedido del usuario, SPEC §2.6): selector de mes y botón en el panel que baja un `.csv` para Excel con los pagos del mes (anulados marcados, total sin anulados).
+  - Terminado: tests del archivo (formato para Excel en español, anulados, total, escapes e inyección de fórmulas); descarga probada en el navegador.
 - [ ] **T19 Deploy de producción** y alta del admin real. Checklist de la revisión de seguridad (T18):
   - Proyecto de Supabase nuevo (no la demo, que tiene clientes ficticios con contraseña conocida).
   - `db push --remote` **sin** `--include-seed`; cargar solo `seeds/exercises.sql` y `seeds/routine-templates.sql` (y las fotos), y los planes reales.
